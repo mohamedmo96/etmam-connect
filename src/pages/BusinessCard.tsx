@@ -5,7 +5,7 @@ import { motion, useMotionValue, useTransform, useSpring } from "framer-motion";
 import {
   RotateCw, Globe, Linkedin, MessageCircle, Mail, Phone, MapPin,
   UserPlus, Share2, Settings, Heart, Award, Briefcase, GraduationCap,
-  Languages, Loader2, ExternalLink,
+  Languages, Loader2, Sparkles, Zap,
 } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -28,14 +28,13 @@ const BusinessCard = () => {
     x.set(e.clientX - rect.left - rect.width / 2);
     y.set(e.clientY - rect.top - rect.height / 2);
   };
-
   const handleMouseLeave = () => { x.set(0); y.set(0); };
 
   const d = cardData || {} as any;
   const name = lang === "ar" ? (d.name_ar || "محمود عبدالرحمن") : (d.name_en || "Mahmoud Abdelrahman");
   const title = lang === "ar" ? (d.title_ar || "محلل أعمال") : (d.title_en || "Business Analyst");
   const company = lang === "ar" ? (d.company_ar || "إتمام لتقنية المعلومات") : (d.company_en || "Etmam for Information Technology");
-  const about = lang === "ar" ? (d.about_ar || "محلل أعمال شغوف بالتقنية") : (d.about_en || "Passionate Business Analyst with expertise in bridging the gap between business needs and technology solutions.");
+  const about = lang === "ar" ? (d.about_ar || "محلل أعمال شغوف بالتقنية وتحسين العمليات") : (d.about_en || "Passionate Business Analyst with expertise in bridging the gap between business needs and technology solutions.");
   const locationText = lang === "ar" ? (d.location_ar || "السليمانية، الرياض") : (d.location_en || "Sulaymaniyah, Riyadh 12242");
   const phoneNum = d.phone || "+966 560 303 813";
   const emailAddr = d.email || "mahmoud@etmam.com";
@@ -50,9 +49,7 @@ const BusinessCard = () => {
     const blob = new Blob([vcard], { type: "text/vcard" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
-    a.href = url;
-    a.download = `${(d.name_en || "contact").replace(/\s/g, "_")}.vcf`;
-    a.click();
+    a.href = url; a.download = `${(d.name_en || "contact").replace(/\s/g, "_")}.vcf`; a.click();
     URL.revokeObjectURL(url);
   };
 
@@ -65,17 +62,20 @@ const BusinessCard = () => {
   if (isLoading) {
     return (
       <div className="relative z-10 flex min-h-screen items-center justify-center">
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="flex flex-col items-center gap-4"
-        >
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex flex-col items-center gap-4">
           <Loader2 className="h-8 w-8 animate-spin text-primary" />
-          <p className="text-sm text-muted-foreground">Loading...</p>
         </motion.div>
       </div>
     );
   }
+
+  // Decorative corner component
+  const Corner = ({ className }: { className: string }) => (
+    <div className={`absolute h-6 w-6 ${className}`}>
+      <div className="absolute h-full w-[1px] bg-gradient-to-b from-primary/30 to-transparent" />
+      <div className="absolute h-[1px] w-full bg-gradient-to-r from-primary/30 to-transparent" />
+    </div>
+  );
 
   return (
     <div className="relative z-10 flex min-h-screen items-center justify-center px-4 py-10">
@@ -105,11 +105,7 @@ const BusinessCard = () => {
       >
         <motion.div
           className="relative"
-          style={{
-            transformStyle: "preserve-3d",
-            rotateX: flipped ? 0 : rotateX,
-            rotateY: flipped ? 180 : rotateY2,
-          }}
+          style={{ transformStyle: "preserve-3d", rotateX: flipped ? 0 : rotateX, rotateY: flipped ? 180 : rotateY2 }}
           animate={{ rotateY: flipped ? 180 : 0 }}
           transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
         >
@@ -121,69 +117,106 @@ const BusinessCard = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, ease: "easeOut" }}
           >
-            {/* Top accent line */}
-            <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
+            {/* Decorative corners */}
+            <Corner className="left-3 top-3" />
+            <Corner className="right-3 top-3 rotate-90" />
+            <Corner className="bottom-3 left-3 -rotate-90" />
+            <Corner className="bottom-3 right-3 rotate-180" />
 
-            {/* Flip button */}
-            <div className="flex items-center justify-between p-5">
+            {/* Top accent */}
+            <div className="absolute inset-x-0 top-0 h-[1.5px] bg-gradient-to-r from-transparent via-primary/40 to-transparent" />
+            {/* Bottom accent */}
+            <div className="absolute inset-x-0 bottom-0 h-[1.5px] bg-gradient-to-r from-transparent via-primary/20 to-transparent" />
+
+            {/* Background decorative circles */}
+            <div className="pointer-events-none absolute -right-20 -top-20 h-40 w-40 rounded-full bg-primary/[0.03] blur-2xl" />
+            <div className="pointer-events-none absolute -bottom-16 -left-16 h-32 w-32 rounded-full bg-primary/[0.04] blur-2xl" />
+
+            {/* Header */}
+            <div className="flex items-center justify-between p-5 pb-0">
               <button onClick={() => setFlipped(true)} className="icon-btn">
                 <RotateCw size={16} className="text-muted-foreground" />
               </button>
-              <div className="flex items-center gap-1.5 text-muted-foreground/50">
-                <ExternalLink size={12} />
-                <span className="text-[10px] font-medium tracking-widest uppercase">Digital Card</span>
+              <div className="flex items-center gap-1.5 rounded-full border border-border/30 bg-secondary/20 px-3 py-1">
+                <Sparkles size={10} className="text-primary/60" />
+                <span className="text-[9px] font-semibold tracking-[0.2em] uppercase text-muted-foreground/50">Digital Card</span>
               </div>
             </div>
 
-            <div className="flex flex-col items-center px-8 pb-8">
+            <div className="flex flex-col items-center px-8 pb-8 pt-5">
               {/* Company Logo */}
               <motion.div
-                className="mb-7 flex items-center gap-2"
+                className="mb-8 flex items-center gap-3"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.15 }}
               >
-                <div className="h-px w-10 bg-gradient-to-r from-transparent to-primary/40" />
+                <div className="flex items-center gap-[3px]">
+                  <div className="h-[1px] w-3 bg-primary/20" />
+                  <div className="h-[1px] w-5 bg-primary/30" />
+                  <div className="h-[1px] w-8 bg-primary/50" />
+                </div>
                 <div className="flex flex-col items-center">
-                  <span className="text-[22px] font-bold tracking-[0.2em] text-primary">
+                  <span className="text-[24px] font-bold tracking-[0.22em] text-primary">
                     ETMAM
                   </span>
-                  <span className="text-[9px] font-medium tracking-[0.25em] text-muted-foreground/60" style={{ fontFamily: "var(--font-ar)" }}>
-                    إتمام لتقنية المعلومات
-                  </span>
+                  <div className="mt-1 flex items-center gap-2">
+                    <div className="h-[1px] w-4 bg-muted-foreground/20" />
+                    <span className="text-[9px] font-medium tracking-[0.2em] text-muted-foreground/50" style={{ fontFamily: "var(--font-ar)" }}>
+                      إتمام لتقنية المعلومات
+                    </span>
+                    <div className="h-[1px] w-4 bg-muted-foreground/20" />
+                  </div>
                 </div>
-                <div className="h-px w-10 bg-gradient-to-l from-transparent to-primary/40" />
+                <div className="flex items-center gap-[3px]">
+                  <div className="h-[1px] w-8 bg-primary/50" />
+                  <div className="h-[1px] w-5 bg-primary/30" />
+                  <div className="h-[1px] w-3 bg-primary/20" />
+                </div>
               </motion.div>
 
-              {/* Avatar */}
+              {/* Avatar with double ring */}
               <motion.div
-                className="glow-border mb-7 h-[120px] w-[120px] overflow-hidden rounded-full"
+                className="relative mb-8"
                 initial={{ opacity: 0, scale: 0.7 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.25, type: "spring", stiffness: 150, damping: 20 }}
               >
-                <img src={d.avatar_url || profilePhoto} alt={name} className="h-full w-full object-cover" />
+                {/* Outer decorative ring */}
+                <div className="absolute -inset-2 rounded-full border border-dashed border-primary/15 animate-[spin_30s_linear_infinite]" />
+                {/* Small dots on the ring */}
+                <div className="absolute -inset-2 rounded-full">
+                  <div className="absolute left-1/2 top-0 h-1.5 w-1.5 -translate-x-1/2 rounded-full bg-primary/40" />
+                  <div className="absolute bottom-0 left-1/2 h-1.5 w-1.5 -translate-x-1/2 rounded-full bg-primary/40" />
+                  <div className="absolute left-0 top-1/2 h-1.5 w-1.5 -translate-y-1/2 rounded-full bg-primary/40" />
+                  <div className="absolute right-0 top-1/2 h-1.5 w-1.5 -translate-y-1/2 rounded-full bg-primary/40" />
+                </div>
+                <div className="glow-border h-[120px] w-[120px] overflow-hidden rounded-full">
+                  <img src={d.avatar_url || profilePhoto} alt={name} className="h-full w-full object-cover" />
+                </div>
               </motion.div>
 
-              {/* Name & Title */}
+              {/* Name */}
               <motion.h1
-                className="mb-1.5 text-center text-[22px] font-bold leading-tight text-foreground"
+                className="mb-1.5 text-center text-[23px] font-bold leading-tight text-foreground"
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.35 }}
               >
                 {name}
               </motion.h1>
-              <motion.p
-                className="mb-1 text-center text-[15px] font-semibold text-primary"
+              {/* Title with accent */}
+              <motion.div
+                className="mb-1.5 flex items-center gap-2"
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4 }}
               >
-                {title}
-              </motion.p>
+                <Zap size={13} className="text-primary/60" />
+                <p className="text-[15px] font-semibold text-primary">{title}</p>
+              </motion.div>
               <motion.p
-                className="mb-7 text-center text-[13px] text-muted-foreground"
+                className="mb-8 text-center text-[13px] text-muted-foreground/80"
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.45 }}
@@ -191,36 +224,45 @@ const BusinessCard = () => {
                 {company}
               </motion.p>
 
-              {/* Social Icons */}
+              {/* Social Icons with labels */}
               <motion.div
-                className="mb-8 flex gap-3"
+                className="mb-8 flex gap-4"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.5 }}
               >
                 {[
-                  { icon: Globe, href: websiteUrl, label: "Website" },
+                  { icon: Globe, href: websiteUrl, label: lang === "ar" ? "الموقع" : "Web" },
                   { icon: Linkedin, href: linkedinUrl, label: "LinkedIn" },
-                  { icon: MessageCircle, href: d.whatsapp_url || "#", label: "WhatsApp" },
-                  { icon: Mail, href: `mailto:${emailAddr}`, label: "Email" },
+                  { icon: MessageCircle, href: d.whatsapp_url || "#", label: lang === "ar" ? "واتساب" : "Chat" },
+                  { icon: Mail, href: `mailto:${emailAddr}`, label: lang === "ar" ? "بريد" : "Email" },
                 ].map(({ icon: Icon, href, label }, i) => (
                   <motion.a
                     key={i}
                     href={href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="icon-btn !rounded-2xl !p-3"
-                    aria-label={label}
+                    className="group flex flex-col items-center gap-1.5"
                     whileHover={{ y: -2 }}
                     whileTap={{ scale: 0.95 }}
                   >
-                    <Icon size={20} className="text-foreground/80" />
+                    <div className="icon-btn !rounded-2xl !p-3 group-hover:!border-primary/30">
+                      <Icon size={19} className="text-foreground/70 transition-colors group-hover:text-primary" />
+                    </div>
+                    <span className="text-[9px] font-medium text-muted-foreground/50 transition-colors group-hover:text-muted-foreground">{label}</span>
                   </motion.a>
                 ))}
               </motion.div>
 
+              {/* Separator */}
+              <div className="mb-7 flex w-full items-center gap-3">
+                <div className="h-px flex-1 bg-gradient-to-r from-transparent to-border/50" />
+                <div className="h-1 w-1 rounded-full bg-primary/30" />
+                <div className="h-px flex-1 bg-gradient-to-l from-transparent to-border/50" />
+              </div>
+
               {/* Contact Details */}
-              <div className="mb-8 w-full space-y-3">
+              <div className="mb-7 w-full space-y-3">
                 <motion.a
                   href={`tel:${phoneNum}`}
                   className="contact-row"
@@ -228,12 +270,15 @@ const BusinessCard = () => {
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.55 }}
                 >
-                  <div className="section-icon shrink-0 !h-10 !w-10 !rounded-full">
+                  <div className="section-icon shrink-0 !h-11 !w-11 !rounded-full">
                     <Phone size={17} className="text-primary" />
                   </div>
-                  <div className="min-w-0">
-                    <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground/70">{t("call")}</p>
-                    <p className="text-sm font-medium text-foreground" dir="ltr">{phoneNum}</p>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-muted-foreground/60">{t("call")}</p>
+                    <p className="text-[14px] font-medium text-foreground" dir="ltr">{phoneNum}</p>
+                  </div>
+                  <div className="h-5 w-5 flex items-center justify-center rounded-full bg-primary/10">
+                    <Phone size={10} className="text-primary/60" />
                   </div>
                 </motion.a>
                 <motion.div
@@ -242,27 +287,35 @@ const BusinessCard = () => {
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.6 }}
                 >
-                  <div className="section-icon shrink-0 !h-10 !w-10 !rounded-full">
+                  <div className="section-icon shrink-0 !h-11 !w-11 !rounded-full">
                     <MapPin size={17} className="text-primary" />
                   </div>
-                  <div className="min-w-0">
-                    <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground/70">{t("location")}</p>
-                    <p className="text-sm font-medium text-foreground">{locationText}</p>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-muted-foreground/60">{t("location")}</p>
+                    <p className="text-[14px] font-medium text-foreground">{locationText}</p>
+                  </div>
+                  <div className="h-5 w-5 flex items-center justify-center rounded-full bg-primary/10">
+                    <MapPin size={10} className="text-primary/60" />
                   </div>
                 </motion.div>
               </div>
 
-              {/* QR Code */}
+              {/* QR Code with frame */}
               <motion.div
                 className="mb-8 flex w-full flex-col items-center"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.65 }}
               >
-                <p className="mb-3 text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-foreground/60">
+                <p className="mb-3 text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/50">
                   {t("scan_linkedin")}
                 </p>
-                <div className="rounded-2xl border border-border/40 bg-secondary/15 p-4">
+                <div className="relative rounded-2xl border border-border/30 bg-secondary/10 p-5">
+                  {/* QR corner accents */}
+                  <div className="absolute left-2 top-2 h-3 w-3 border-l border-t border-primary/30 rounded-tl-sm" />
+                  <div className="absolute right-2 top-2 h-3 w-3 border-r border-t border-primary/30 rounded-tr-sm" />
+                  <div className="absolute bottom-2 left-2 h-3 w-3 border-l border-b border-primary/30 rounded-bl-sm" />
+                  <div className="absolute bottom-2 right-2 h-3 w-3 border-r border-b border-primary/30 rounded-br-sm" />
                   <QRCodeSVG value={linkedinUrl} size={110} bgColor="transparent" fgColor="hsl(217, 91%, 60%)" />
                 </div>
               </motion.div>
@@ -276,8 +329,8 @@ const BusinessCard = () => {
               >
                 <motion.button
                   onClick={handleSaveContact}
-                  className="flex flex-1 items-center justify-center gap-2.5 rounded-2xl bg-primary py-3.5 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/20"
-                  whileHover={{ y: -1, boxShadow: "0 8px 30px hsl(217 91% 60% / 0.3)" }}
+                  className="save-btn flex flex-1 items-center justify-center gap-2.5 rounded-2xl py-3.5 text-sm font-semibold text-primary-foreground"
+                  whileHover={{ y: -1 }}
                   whileTap={{ scale: 0.98 }}
                 >
                   <UserPlus size={17} />
@@ -300,29 +353,38 @@ const BusinessCard = () => {
             className="glass-card absolute inset-0 w-full overflow-auto"
             style={{ backfaceVisibility: "hidden", transform: "rotateY(180deg)" }}
           >
-            <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
+            <Corner className="left-3 top-3" />
+            <Corner className="right-3 top-3 rotate-90" />
+            <Corner className="bottom-3 left-3 -rotate-90" />
+            <Corner className="bottom-3 right-3 rotate-180" />
+            <div className="absolute inset-x-0 top-0 h-[1.5px] bg-gradient-to-r from-transparent via-primary/40 to-transparent" />
+            <div className="absolute inset-x-0 bottom-0 h-[1.5px] bg-gradient-to-r from-transparent via-primary/20 to-transparent" />
+            <div className="pointer-events-none absolute -right-16 top-10 h-32 w-32 rounded-full bg-primary/[0.03] blur-2xl" />
 
-            <div className="flex items-center justify-between p-5">
+            <div className="flex items-center justify-between p-5 pb-0">
               <button onClick={() => setFlipped(false)} className="icon-btn">
                 <RotateCw size={16} className="text-muted-foreground" />
               </button>
-              <span className="text-[10px] font-medium uppercase tracking-widest text-muted-foreground/50">Profile</span>
+              <div className="flex items-center gap-1.5 rounded-full border border-border/30 bg-secondary/20 px-3 py-1">
+                <Sparkles size={10} className="text-primary/60" />
+                <span className="text-[9px] font-semibold tracking-[0.2em] uppercase text-muted-foreground/50">Profile</span>
+              </div>
             </div>
 
-            <div className="px-7 pb-8">
-              {/* Mini profile header */}
+            <div className="px-7 pb-8 pt-5">
+              {/* Mini header */}
               <motion.div
-                className="mb-6 flex items-center gap-3.5"
+                className="mb-6 flex items-center gap-3.5 rounded-2xl border border-border/20 bg-secondary/10 p-3"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: flipped ? 1 : 0 }}
                 transition={{ delay: 0.2 }}
               >
-                <div className="h-12 w-12 overflow-hidden rounded-xl border border-glass-border/20">
+                <div className="glow-border h-12 w-12 overflow-hidden rounded-xl !border-[1.5px]">
                   <img src={d.avatar_url || profilePhoto} alt={name} className="h-full w-full object-cover" />
                 </div>
-                <div>
-                  <p className="text-sm font-bold text-foreground">{name}</p>
-                  <p className="text-xs text-primary">{title}</p>
+                <div className="flex-1">
+                  <p className="text-[14px] font-bold text-foreground">{name}</p>
+                  <p className="text-[12px] font-medium text-primary">{title}</p>
                 </div>
               </motion.div>
 
@@ -337,7 +399,7 @@ const BusinessCard = () => {
                   <div className="section-icon"><Heart size={15} className="text-primary" /></div>
                   <h2 className="section-title">{t("about_me")}</h2>
                 </div>
-                <p className="rounded-2xl border border-border/30 bg-secondary/15 p-4 text-[13px] leading-[1.7] text-muted-foreground">
+                <p className="rounded-2xl border border-border/20 bg-secondary/10 p-4 text-[13px] leading-[1.8] text-muted-foreground">
                   {about}
                 </p>
               </motion.div>
@@ -368,7 +430,12 @@ const BusinessCard = () => {
                 </div>
               </motion.div>
 
-              <div className="mb-6 h-px bg-gradient-to-r from-transparent via-border/50 to-transparent" />
+              {/* Separator */}
+              <div className="mb-6 flex items-center gap-3">
+                <div className="h-px flex-1 bg-gradient-to-r from-transparent to-border/40" />
+                <div className="h-1 w-1 rounded-full bg-primary/30" />
+                <div className="h-px flex-1 bg-gradient-to-l from-transparent to-border/40" />
+              </div>
 
               {/* Experience */}
               <motion.div
@@ -383,15 +450,13 @@ const BusinessCard = () => {
                 </div>
                 <div className="space-y-2.5">
                   {experience.map((exp: any, i: number) => (
-                    <div key={i} className="flex items-center gap-3 rounded-2xl border border-border/30 bg-secondary/15 px-4 py-3">
-                      <div className="h-2 w-2 shrink-0 rounded-full bg-primary" />
+                    <div key={i} className="flex items-center gap-3 rounded-2xl border border-border/20 bg-secondary/10 px-4 py-3.5">
+                      <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-primary/10">
+                        <Briefcase size={12} className="text-primary/70" />
+                      </div>
                       <div>
-                        <p className="text-[13px] font-semibold text-foreground">
-                          {lang === "ar" ? exp.title_ar : exp.title_en}
-                        </p>
-                        <p className="text-[11px] text-muted-foreground">
-                          {lang === "ar" ? exp.company_ar : exp.company_en}
-                        </p>
+                        <p className="text-[13px] font-semibold text-foreground">{lang === "ar" ? exp.title_ar : exp.title_en}</p>
+                        <p className="text-[11px] text-muted-foreground">{lang === "ar" ? exp.company_ar : exp.company_en}</p>
                       </div>
                     </div>
                   ))}
@@ -410,15 +475,13 @@ const BusinessCard = () => {
                 </div>
                 <div className="space-y-2.5">
                   {education.map((edu: any, i: number) => (
-                    <div key={i} className="flex items-center gap-3 rounded-2xl border border-border/30 bg-secondary/15 px-4 py-3">
-                      <div className="h-2 w-2 shrink-0 rounded-full bg-primary" />
+                    <div key={i} className="flex items-center gap-3 rounded-2xl border border-border/20 bg-secondary/10 px-4 py-3.5">
+                      <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-primary/10">
+                        <GraduationCap size={12} className="text-primary/70" />
+                      </div>
                       <div>
-                        <p className="text-[13px] font-semibold text-foreground">
-                          {lang === "ar" ? edu.degree_ar : edu.degree_en}
-                        </p>
-                        <p className="text-[11px] text-muted-foreground">
-                          {lang === "ar" ? edu.field_ar : edu.field_en}
-                        </p>
+                        <p className="text-[13px] font-semibold text-foreground">{lang === "ar" ? edu.degree_ar : edu.degree_en}</p>
+                        <p className="text-[11px] text-muted-foreground">{lang === "ar" ? edu.field_ar : edu.field_en}</p>
                       </div>
                     </div>
                   ))}
@@ -429,14 +492,14 @@ const BusinessCard = () => {
         </motion.div>
       </div>
 
-      {/* Footer watermark */}
+      {/* Footer */}
       <motion.p
-        className="fixed bottom-4 left-0 right-0 text-center text-[10px] tracking-widest text-muted-foreground/30"
+        className="fixed bottom-4 left-0 right-0 text-center text-[9px] font-medium tracking-[0.3em] uppercase text-muted-foreground/20"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1.2 }}
       >
-        POWERED BY ETMAM
+        Powered by Etmam
       </motion.p>
     </div>
   );
