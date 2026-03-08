@@ -139,80 +139,61 @@ const BusinessCard = () => {
               </button>
             </div>
 
-            <div className="flex flex-col items-center px-8 pb-8 pt-5">
-              {/* Company Logo */}
+            <div className="flex flex-col items-center px-8 pb-8 pt-4">
+              {/* Company Logo - compact */}
               <motion.div
-                className="mb-8 flex items-center gap-3"
+                className="mb-6 flex items-center gap-2"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.15 }}
               >
-                <div className="flex items-center gap-[3px]">
-                  <div className="h-[1px] w-3 bg-primary/30" />
-                  <div className="h-[1px] w-5 bg-primary/50" />
-                  <div className="h-[1px] w-8 bg-primary/70" />
-                </div>
-                <div className="flex flex-col items-center">
-                  <span className="text-[24px] font-extrabold tracking-[0.22em] text-primary">
-                    ETMAM
-                  </span>
-                  <div className="mt-1 flex items-center gap-2">
-                    <div className="h-[1px] w-4 bg-muted-foreground/30" />
-                    <span className="text-[11px] font-bold tracking-[0.1em] text-foreground/80" style={{ fontFamily: "var(--font-ar)" }}>
-                      إتمام لتقنية المعلومات
-                    </span>
-                    <div className="h-[1px] w-4 bg-muted-foreground/30" />
-                  </div>
-                </div>
-                <div className="flex items-center gap-[3px]">
-                  <div className="h-[1px] w-8 bg-primary/70" />
-                  <div className="h-[1px] w-5 bg-primary/50" />
-                  <div className="h-[1px] w-3 bg-primary/30" />
-                </div>
+                <div className="h-[1px] w-6 bg-gradient-to-r from-transparent to-primary/50" />
+                <span className="text-[13px] font-extrabold tracking-[0.3em] uppercase text-primary/80">
+                  ETMAM
+                </span>
+                <div className="h-[1px] w-6 bg-gradient-to-l from-transparent to-primary/50" />
               </motion.div>
 
               {/* Avatar with double ring */}
               <motion.div
-                className="relative mb-8"
+                className="relative mb-6"
                 initial={{ opacity: 0, scale: 0.7 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.25, type: "spring", stiffness: 150, damping: 20 }}
               >
-                {/* Outer decorative ring */}
                 <div className="absolute -inset-2 rounded-full border border-dashed border-primary/25 animate-[spin_30s_linear_infinite]" />
-                {/* Small dots on the ring */}
                 <div className="absolute -inset-2 rounded-full">
                   <div className="absolute left-1/2 top-0 h-1.5 w-1.5 -translate-x-1/2 rounded-full bg-primary/60" />
                   <div className="absolute bottom-0 left-1/2 h-1.5 w-1.5 -translate-x-1/2 rounded-full bg-primary/60" />
                   <div className="absolute left-0 top-1/2 h-1.5 w-1.5 -translate-y-1/2 rounded-full bg-primary/60" />
                   <div className="absolute right-0 top-1/2 h-1.5 w-1.5 -translate-y-1/2 rounded-full bg-primary/60" />
                 </div>
-                <div className="glow-border h-[120px] w-[120px] overflow-hidden rounded-full">
+                <div className="glow-border h-[110px] w-[110px] overflow-hidden rounded-full">
                   <img src={d.avatar_url || profilePhoto} alt={name} className="h-full w-full object-cover" />
                 </div>
               </motion.div>
 
               {/* Name */}
               <motion.h1
-                className="mb-1.5 text-center text-[24px] font-extrabold leading-tight text-foreground"
+                className="mb-1 text-center text-[22px] font-extrabold leading-tight text-foreground"
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.35 }}
               >
                 {name}
               </motion.h1>
-              {/* Title with accent */}
-              <motion.div
-                className="mb-1.5 flex items-center gap-2"
+              {/* Title */}
+              <motion.p
+                className="mb-1 text-center text-[15px] font-bold text-primary"
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4 }}
               >
-                <Zap size={14} className="text-primary" />
-                <p className="text-[16px] font-bold text-primary">{title}</p>
-              </motion.div>
+                {title}
+              </motion.p>
+              {/* Company */}
               <motion.p
-                className="mb-8 text-center text-[14px] font-medium text-muted-foreground"
+                className="mb-7 text-center text-[13px] font-medium text-muted-foreground"
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.45 }}
