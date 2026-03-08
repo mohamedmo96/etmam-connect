@@ -148,23 +148,27 @@ const BusinessCard = () => {
 
               {/* Name & Info */}
               <motion.h1
-                className="mb-0.5 text-center text-[21px] font-extrabold leading-tight text-foreground"
+                className="mb-1 text-center text-[22px] font-extrabold leading-tight tracking-tight text-foreground"
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3 }}
               >
                 {name}
               </motion.h1>
-              <motion.p
-                className="mb-0.5 text-center text-[14px] font-bold text-primary"
+              <motion.div
+                className="mb-1.5 flex items-center justify-center gap-2"
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.35 }}
               >
-                {title}
-              </motion.p>
+                <div className="h-px w-5 bg-gradient-to-r from-transparent to-primary/40" />
+                <p className="text-center text-[14px] font-bold text-primary">
+                  {title}
+                </p>
+                <div className="h-px w-5 bg-gradient-to-l from-transparent to-primary/40" />
+              </motion.div>
               <motion.p
-                className="mb-5 text-center text-[12px] font-medium text-muted-foreground"
+                className="mb-6 text-center text-[12px] font-medium text-muted-foreground/80"
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4 }}
@@ -172,31 +176,33 @@ const BusinessCard = () => {
                 {company}
               </motion.p>
 
-              {/* Quick Actions - horizontal row */}
+              {/* Quick Actions - with labels */}
               <motion.div
-                className="mb-5 flex w-full items-center justify-center gap-3"
+                className="mb-5 flex w-full items-center justify-center gap-4"
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.45 }}
               >
                 {[
-                  { icon: Globe, href: websiteUrl, tip: lang === "ar" ? "الموقع" : "Web" },
-                  { icon: Linkedin, href: linkedinUrl, tip: lang === "ar" ? "لينكدإن" : "LinkedIn" },
-                  { icon: MessageCircle, href: d.whatsapp_url || "#", tip: lang === "ar" ? "واتساب" : "WhatsApp" },
-                  { icon: Mail, href: `mailto:${emailAddr}`, tip: lang === "ar" ? "بريد" : "Email" },
-                  { icon: Phone, href: `tel:${phoneNum}`, tip: lang === "ar" ? "اتصال" : "Call" },
-                ].map(({ icon: Icon, href, tip }, i) => (
+                  { icon: Globe, href: websiteUrl, label: lang === "ar" ? "الموقع" : "Web" },
+                  { icon: Linkedin, href: linkedinUrl, label: lang === "ar" ? "لينكدإن" : "LinkedIn" },
+                  { icon: MessageCircle, href: d.whatsapp_url || "#", label: lang === "ar" ? "واتساب" : "Chat" },
+                  { icon: Mail, href: `mailto:${emailAddr}`, label: lang === "ar" ? "بريد" : "Email" },
+                  { icon: Phone, href: `tel:${phoneNum}`, label: lang === "ar" ? "اتصال" : "Call" },
+                ].map(({ icon: Icon, href, label }, i) => (
                   <motion.a
                     key={i}
                     href={href}
                     target={href.startsWith("http") ? "_blank" : undefined}
                     rel="noopener noreferrer"
-                    title={tip}
-                    className="group flex h-11 w-11 items-center justify-center rounded-xl border border-border/40 bg-secondary/20 transition-all duration-200 hover:border-primary/40 hover:bg-primary/10 hover:shadow-lg hover:shadow-primary/5"
+                    className="group flex flex-col items-center gap-1.5"
                     whileHover={{ y: -2 }}
                     whileTap={{ scale: 0.93 }}
                   >
-                    <Icon size={18} className="text-foreground/70 transition-colors group-hover:text-primary" />
+                    <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-border/40 bg-secondary/20 transition-all duration-200 group-hover:border-primary/40 group-hover:bg-primary/10 group-hover:shadow-lg group-hover:shadow-primary/5">
+                      <Icon size={18} className="text-foreground/70 transition-colors group-hover:text-primary" />
+                    </div>
+                    <span className="text-[9px] font-semibold text-muted-foreground/60 transition-colors group-hover:text-primary/80">{label}</span>
                   </motion.a>
                 ))}
               </motion.div>
