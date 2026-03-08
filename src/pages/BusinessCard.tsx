@@ -140,20 +140,6 @@ const BusinessCard = () => {
             </div>
 
             <div className="flex flex-col items-center px-8 pb-8 pt-4">
-              {/* Company Logo - compact */}
-              <motion.div
-                className="mb-6 flex items-center gap-2"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.15 }}
-              >
-                <div className="h-[1px] w-6 bg-gradient-to-r from-transparent to-primary/50" />
-                <span className="text-[13px] font-extrabold tracking-[0.3em] uppercase text-primary/80">
-                  ETMAM
-                </span>
-                <div className="h-[1px] w-6 bg-gradient-to-l from-transparent to-primary/50" />
-              </motion.div>
-
               {/* Avatar with double ring */}
               <motion.div
                 className="relative mb-6"
