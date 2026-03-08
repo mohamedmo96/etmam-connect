@@ -341,16 +341,18 @@ const BusinessCard = () => {
             <div className="px-8 pb-10 pt-6">
               {/* Mini header */}
               <motion.div
-                className="mb-8 flex flex-col items-center text-center"
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: flipped ? 1 : 0, y: flipped ? 0 : -10 }}
+                className="mb-8 flex items-center gap-4"
+                initial={{ opacity: 0, x: -15 }}
+                animate={{ opacity: flipped ? 1 : 0, x: flipped ? 0 : -15 }}
                 transition={{ delay: 0.2, duration: 0.4 }}
               >
-                <div className="mb-4 h-20 w-20 overflow-hidden rounded-full border-2 border-primary/30 shadow-lg shadow-primary/10">
+                <div className="h-16 w-16 shrink-0 overflow-hidden rounded-full border-2 border-primary/30 shadow-lg shadow-primary/10">
                   <img src={d.avatar_url || profilePhoto} alt={name} className="h-full w-full object-cover" />
                 </div>
-                <p className="text-[20px] font-extrabold text-foreground">{name}</p>
-                <p className="text-[15px] font-bold text-primary">{title}</p>
+                <div>
+                  <p className="text-[18px] font-extrabold text-foreground">{name}</p>
+                  <p className="text-[14px] font-bold text-primary">{title}</p>
+                </div>
               </motion.div>
 
               {/* About */}
