@@ -9,55 +9,49 @@ const particleOptions: ISourceOptions = {
   fpsLimit: 60,
   interactivity: {
     events: {
-      onHover: { enable: true, mode: "repulse" },
+      onHover: { enable: true, mode: "grab" },
+      onClick: { enable: true, mode: "push" },
     },
     modes: {
-      repulse: { distance: 100, duration: 0.4, speed: 0.5 },
+      grab: { distance: 180, links: { opacity: 0.4 } },
+      push: { quantity: 3 },
     },
   },
   particles: {
-    color: { value: ["#3B82F6", "#60A5FA", "#93C5FD", "#BFDBFE"] },
+    color: { value: ["#3B82F6", "#60A5FA", "#2563EB", "#1D4ED8"] },
     links: {
-      enable: false,
+      color: "#3B82F6",
+      distance: 180,
+      enable: true,
+      opacity: 0.2,
+      width: 1,
     },
     move: {
       enable: true,
-      speed: 0.3,
-      direction: "top",
-      outModes: { default: "out", top: "out", bottom: "out" },
-      random: true,
-      straight: false,
-      drift: 0.5,
+      speed: 0.5,
+      direction: "none",
+      outModes: { default: "out" },
     },
     number: {
       density: { enable: true },
-      value: 80,
+      value: 90,
     },
     opacity: {
-      value: { min: 0.05, max: 0.35 },
+      value: { min: 0.2, max: 0.6 },
       animation: {
         enable: true,
-        speed: 0.3,
+        speed: 0.6,
         startValue: "random",
-        sync: false,
-        destroy: "none",
       },
     },
     shape: { type: "circle" },
     size: {
-      value: { min: 1, max: 4 },
+      value: { min: 1.5, max: 3.5 },
       animation: {
         enable: true,
-        speed: 0.8,
+        speed: 1,
         startValue: "random",
-        sync: false,
       },
-    },
-    shadow: {
-      blur: 8,
-      color: { value: "#3B82F6" },
-      enable: true,
-      offset: { x: 0, y: 0 },
     },
   },
   detectRetina: true,
@@ -78,10 +72,9 @@ const ParticleBackground = () => {
 
   return (
     <div className="fixed inset-0 z-0">
-      {/* Deep ambient glows */}
-      <div className="absolute -left-40 top-1/4 h-[500px] w-[500px] rounded-full bg-primary/[0.04] blur-[150px]" />
-      <div className="absolute -right-40 top-2/3 h-[400px] w-[400px] rounded-full bg-primary/[0.06] blur-[130px]" />
-      <div className="absolute left-1/3 -bottom-20 h-[350px] w-[350px] rounded-full bg-primary/[0.03] blur-[120px]" />
+      <div className="absolute -left-32 -top-32 h-96 w-96 rounded-full bg-primary/5 blur-[120px]" />
+      <div className="absolute -bottom-32 -right-32 h-96 w-96 rounded-full bg-primary/8 blur-[120px]" />
+      <div className="absolute left-1/2 top-1/2 h-64 w-64 -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/3 blur-[100px]" />
       
       <Particles
         id="tsparticles"
