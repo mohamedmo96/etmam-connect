@@ -117,19 +117,25 @@ const BusinessCard = () => {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
           >
-            {/* Top accent bar */}
-            <div className="h-[2px] bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
+            {/* Top accent header */}
+            <div className="relative h-16 overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-b from-primary/[0.08] to-transparent" />
+              <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent" />
+              <div className="absolute left-1/2 -translate-x-1/2 top-3 flex items-center gap-2">
+                <div className="h-px w-10 bg-gradient-to-r from-transparent to-primary/30" />
+                <div className="h-1.5 w-1.5 rounded-full bg-primary/40" />
+                <div className="h-px w-10 bg-gradient-to-l from-transparent to-primary/30" />
+              </div>
+              <div className="absolute right-5 top-1/2 -translate-y-1/2">
+                <button onClick={() => setFlipped(true)} className="icon-btn !p-2">
+                  <RotateCw size={14} className="text-foreground/60" />
+                </button>
+              </div>
+            </div>
 
             {/* Background glow */}
             <div className="pointer-events-none absolute -right-20 -top-20 h-48 w-48 rounded-full bg-primary/[0.04] blur-3xl" />
             <div className="pointer-events-none absolute -bottom-20 -left-20 h-48 w-48 rounded-full bg-primary/[0.03] blur-3xl" />
-
-            {/* Flip button */}
-            <div className="flex items-center justify-end px-6 pt-5 pb-0">
-              <button onClick={() => setFlipped(true)} className="icon-btn !p-2">
-                <RotateCw size={14} className="text-foreground/60" />
-              </button>
-            </div>
 
             <div className="flex flex-col items-center px-8 pb-8 pt-4">
               {/* Avatar */}
