@@ -271,7 +271,7 @@ const BusinessCard = () => {
                   </div>
                   <div className="min-w-0 flex-1 text-start">
                     <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-muted-foreground">{t("call")}</p>
-                    <p className="text-[15px] font-semibold text-foreground">{phoneNum}</p>
+                    <p className="text-[15px] font-semibold text-foreground" dir="ltr" style={{ textAlign: lang === "ar" ? "right" : "left" }}>{phoneNum}</p>
                   </div>
                 </motion.a>
                 <motion.div
