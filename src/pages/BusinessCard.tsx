@@ -1,4 +1,5 @@
 import { useState, useRef } from "react";
+import profilePhoto from "@/assets/profile-photo.png";
 import { Link } from "react-router-dom";
 import { motion, useMotionValue, useTransform, useSpring } from "framer-motion";
 import {
