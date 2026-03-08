@@ -152,26 +152,26 @@ const BusinessCard = () => {
                 transition={{ delay: 0.15 }}
               >
                 <div className="flex items-center gap-[3px]">
-                  <div className="h-[1px] w-3 bg-primary/20" />
-                  <div className="h-[1px] w-5 bg-primary/30" />
-                  <div className="h-[1px] w-8 bg-primary/50" />
+                  <div className="h-[1px] w-3 bg-primary/30" />
+                  <div className="h-[1px] w-5 bg-primary/50" />
+                  <div className="h-[1px] w-8 bg-primary/70" />
                 </div>
                 <div className="flex flex-col items-center">
-                  <span className="text-[24px] font-bold tracking-[0.22em] text-primary">
+                  <span className="text-[24px] font-extrabold tracking-[0.22em] text-primary">
                     ETMAM
                   </span>
                   <div className="mt-1 flex items-center gap-2">
-                    <div className="h-[1px] w-4 bg-muted-foreground/20" />
-                    <span className="text-[9px] font-medium tracking-[0.2em] text-muted-foreground/50" style={{ fontFamily: "var(--font-ar)" }}>
+                    <div className="h-[1px] w-4 bg-muted-foreground/30" />
+                    <span className="text-[10px] font-semibold tracking-[0.15em] text-muted-foreground" style={{ fontFamily: "var(--font-ar)" }}>
                       إتمام لتقنية المعلومات
                     </span>
-                    <div className="h-[1px] w-4 bg-muted-foreground/20" />
+                    <div className="h-[1px] w-4 bg-muted-foreground/30" />
                   </div>
                 </div>
                 <div className="flex items-center gap-[3px]">
-                  <div className="h-[1px] w-8 bg-primary/50" />
-                  <div className="h-[1px] w-5 bg-primary/30" />
-                  <div className="h-[1px] w-3 bg-primary/20" />
+                  <div className="h-[1px] w-8 bg-primary/70" />
+                  <div className="h-[1px] w-5 bg-primary/50" />
+                  <div className="h-[1px] w-3 bg-primary/30" />
                 </div>
               </motion.div>
 
