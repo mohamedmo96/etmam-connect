@@ -4,43 +4,43 @@
 
 @layer base {
   :root {
-    --background: 222 47% 7%;
+    --background: 222 47% 5%;
     --foreground: 210 40% 96%;
 
-    --card: 222 30% 12%;
+    --card: 222 30% 10%;
     --card-foreground: 210 40% 96%;
 
-    --popover: 222 30% 12%;
+    --popover: 222 30% 10%;
     --popover-foreground: 210 40% 96%;
 
     --primary: 217 91% 60%;
-    --primary-foreground: 222 47% 7%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 217 30% 18%;
+    --secondary: 217 30% 15%;
     --secondary-foreground: 210 40% 96%;
 
-    --muted: 217 20% 16%;
+    --muted: 217 20% 14%;
     --muted-foreground: 215 20% 55%;
 
     --accent: 217 91% 60%;
-    --accent-foreground: 222 47% 7%;
+    --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 217 30% 22%;
-    --input: 217 30% 18%;
+    --border: 217 25% 18%;
+    --input: 217 30% 15%;
     --ring: 217 91% 60%;
 
     --radius: 0.75rem;
 
     /* Glassmorphism tokens */
-    --glass-bg: 217 40% 14%;
-    --glass-border: 217 60% 40%;
+    --glass-bg: 220 40% 10%;
+    --glass-border: 217 50% 30%;
     --glass-glow: 217 91% 60%;
-    --glass-blur: 20px;
+    --glass-blur: 24px;
 
-    --sidebar-background: 222 47% 7%;
+    --sidebar-background: 222 47% 5%;
     --sidebar-foreground: 210 40% 96%;
     --sidebar-primary: 217 91% 60%;
     --sidebar-primary-foreground: 222 47% 7%;
@@ -48,6 +48,9 @@
     --sidebar-accent-foreground: 210 40% 96%;
     --sidebar-border: 217 30% 22%;
     --sidebar-ring: 217 91% 60%;
+
+    --font-en: 'Space Grotesk', 'Outfit', system-ui, sans-serif;
+    --font-ar: 'IBM Plex Sans Arabic', 'Segoe UI', sans-serif;
   }
 }
 
@@ -57,20 +60,37 @@
   }
 
   body {
-    @apply bg-background text-foreground;
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    @apply bg-background text-foreground antialiased;
+    font-family: var(--font-en);
+  }
+
+  [dir="rtl"],
+  [dir="rtl"] * {
+    font-family: var(--font-ar);
+  }
+
+  /* Better text rendering */
+  h1, h2, h3, h4, h5, h6 {
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
   }
 }
 
 @layer components {
   .glass-card {
-    @apply relative rounded-2xl border border-glass-border/30;
-    background: hsl(var(--glass-bg) / 0.6);
-    backdrop-filter: blur(var(--glass-blur));
-    -webkit-backdrop-filter: blur(var(--glass-blur));
+    @apply relative rounded-3xl;
+    background: linear-gradient(
+      145deg,
+      hsl(var(--glass-bg) / 0.7),
+      hsl(var(--glass-bg) / 0.4)
+    );
+    border: 1px solid hsl(var(--glass-border) / 0.2);
+    backdrop-filter: blur(var(--glass-blur)) saturate(1.2);
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(1.2);
     box-shadow:
-      0 0 30px hsl(var(--glass-glow) / 0.08),
-      inset 0 1px 0 hsl(var(--glass-border) / 0.15);
+      0 4px 30px hsl(var(--glass-glow) / 0.06),
+      0 1px 0 hsl(var(--glass-border) / 0.1) inset,
+      0 -1px 0 hsl(220 40% 5% / 0.3) inset;
   }
 
   .glass-card-hover {
@@ -79,33 +99,85 @@
 
   .glass-card-hover:hover {
     box-shadow:
-      0 0 40px hsl(var(--glass-glow) / 0.15),
-      inset 0 1px 0 hsl(var(--glass-border) / 0.25);
-    border-color: hsl(var(--glass-border) / 0.5);
+      0 8px 40px hsl(var(--glass-glow) / 0.12),
+      0 1px 0 hsl(var(--glass-border) / 0.2) inset;
+    border-color: hsl(var(--glass-border) / 0.35);
   }
 
   .glow-border {
+    border: 2.5px solid hsl(var(--glass-glow) / 0.45);
     box-shadow:
-      0 0 15px hsl(var(--glass-glow) / 0.4),
-      0 0 40px hsl(var(--glass-glow) / 0.15);
-    border: 2px solid hsl(var(--glass-glow) / 0.5);
-    animation: pulse-glow 3s ease-in-out infinite;
+      0 0 20px hsl(var(--glass-glow) / 0.3),
+      0 0 50px hsl(var(--glass-glow) / 0.1);
+    animation: pulse-glow 4s ease-in-out infinite;
   }
 
   @keyframes pulse-glow {
-    0%, 100% { box-shadow: 0 0 15px hsl(var(--glass-glow) / 0.4), 0 0 40px hsl(var(--glass-glow) / 0.15); }
-    50% { box-shadow: 0 0 25px hsl(var(--glass-glow) / 0.6), 0 0 60px hsl(var(--glass-glow) / 0.25); }
+    0%, 100% {
+      box-shadow:
+        0 0 20px hsl(var(--glass-glow) / 0.3),
+        0 0 50px hsl(var(--glass-glow) / 0.1);
+    }
+    50% {
+      box-shadow:
+        0 0 28px hsl(var(--glass-glow) / 0.45),
+        0 0 70px hsl(var(--glass-glow) / 0.15);
+    }
   }
 
   .icon-btn {
-    @apply flex items-center justify-center rounded-xl p-2.5 transition-all duration-200;
+    @apply flex items-center justify-center rounded-2xl p-2.5 transition-all duration-300;
     background: hsl(var(--glass-bg) / 0.5);
-    border: 1px solid hsl(var(--glass-border) / 0.2);
+    border: 1px solid hsl(var(--glass-border) / 0.15);
   }
 
   .icon-btn:hover {
-    background: hsl(var(--glass-bg) / 0.8);
-    border-color: hsl(var(--glass-border) / 0.4);
+    background: hsl(var(--glass-bg) / 0.9);
+    border-color: hsl(var(--glass-border) / 0.35);
     transform: translateY(-1px);
+    box-shadow: 0 4px 15px hsl(var(--glass-glow) / 0.1);
+  }
+
+  /* Elegant section header */
+  .section-header {
+    @apply mb-4 flex items-center gap-3;
+  }
+
+  .section-icon {
+    @apply flex h-9 w-9 items-center justify-center rounded-xl;
+    background: linear-gradient(135deg, hsl(var(--primary) / 0.15), hsl(var(--primary) / 0.05));
+    border: 1px solid hsl(var(--primary) / 0.15);
+  }
+
+  .section-title {
+    @apply text-[15px] font-semibold tracking-wide text-foreground;
+  }
+
+  /* Contact row */
+  .contact-row {
+    @apply flex items-center gap-4 rounded-2xl px-5 py-4 transition-all duration-300;
+    background: hsl(var(--secondary) / 0.2);
+    border: 1px solid hsl(var(--border) / 0.5);
+  }
+
+  .contact-row:hover {
+    background: hsl(var(--secondary) / 0.35);
+    border-color: hsl(var(--primary) / 0.2);
+    transform: translateX(3px);
+  }
+
+  /* Skill badge */
+  .skill-badge {
+    @apply rounded-xl px-3.5 py-2 text-xs font-medium transition-all duration-300;
+    background: linear-gradient(135deg, hsl(var(--primary) / 0.1), hsl(var(--primary) / 0.04));
+    border: 1px solid hsl(var(--primary) / 0.15);
+    color: hsl(var(--primary));
+  }
+
+  .skill-badge:hover {
+    background: linear-gradient(135deg, hsl(var(--primary) / 0.18), hsl(var(--primary) / 0.08));
+    border-color: hsl(var(--primary) / 0.3);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px hsl(var(--primary) / 0.1);
   }
 }
