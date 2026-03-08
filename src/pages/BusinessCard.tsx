@@ -107,15 +107,15 @@ const BusinessCard = () => {
           className="relative"
           style={{ transformStyle: "preserve-3d", rotateX: flipped ? 0 : rotateX, rotateY: flipped ? 180 : rotateY2 }}
           animate={{ rotateY: flipped ? 180 : 0 }}
-          transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
+          transition={{ duration: 0.7, ease: [0.68, -0.15, 0.27, 1.15] }}
         >
           {/* ===== FRONT ===== */}
           <motion.div
             className="glass-card w-full overflow-hidden"
             style={{ backfaceVisibility: "hidden" }}
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, ease: "easeOut" }}
+            initial={{ opacity: 0, y: 40, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
           >
             {/* Top accent bar */}
             <div className="h-[2px] bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
