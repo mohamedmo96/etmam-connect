@@ -20,9 +20,50 @@ const Dashboard = () => {
 
   const [form, setForm] = useState<Record<string, any>>({});
   const [newSkill, setNewSkill] = useState("");
+  const [showSuggestions, setShowSuggestions] = useState(false);
   const [activeTab, setActiveTab] = useState("basic");
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const skillInputRef = useRef<HTMLInputElement>(null);
+
+  const allSkills = [
+    "Business Analysis", "Requirements Gathering", "Process Optimization",
+    "Stakeholder Management", "Agile Methodology", "Data Analysis",
+    "Project Management", "Scrum", "JIRA", "Confluence",
+    "SQL", "Power BI", "Tableau", "Excel", "Python",
+    "Product Management", "UX Research", "User Stories",
+    "Wireframing", "Prototyping", "Figma", "UI/UX Design",
+    "Risk Management", "Change Management", "BPMN",
+    "API Integration", "System Analysis", "ERP Systems",
+    "SAP", "Salesforce", "CRM", "Digital Transformation",
+    "Machine Learning", "Artificial Intelligence", "Cloud Computing",
+    "AWS", "Azure", "Google Cloud", "DevOps", "CI/CD",
+    "JavaScript", "TypeScript", "React", "Node.js", "Java",
+    "Communication", "Leadership", "Problem Solving",
+    "Critical Thinking", "Teamwork", "Presentation Skills",
+    "Strategic Planning", "Market Research", "Competitive Analysis",
+    "Financial Analysis", "Budgeting", "Forecasting",
+    "Quality Assurance", "Testing", "Documentation",
+    "Negotiation", "Conflict Resolution", "Time Management",
+  ];
+
+  const currentSkills = Array.isArray(form.skills) ? form.skills : [];
+
+  const filteredSuggestions = useMemo(() => {
+    if (!newSkill.trim()) return [];
+    const query = newSkill.toLowerCase();
+    return allSkills
+      .filter(s => s.toLowerCase().includes(query) && !currentSkills.includes(s))
+      .slice(0, 6);
+  }, [newSkill, currentSkills]);
+
+  const selectSuggestion = (skill: string) => {
+    const skills = [...currentSkills, skill];
+    handleChange("skills", skills);
+    setNewSkill("");
+    setShowSuggestions(false);
+    skillInputRef.current?.focus();
+  };
 
   useEffect(() => {
     if (cardData) {
