@@ -326,7 +326,11 @@ const BusinessCard = () => {
             <Corner className="bottom-3 right-3 rotate-180" />
             <div className="absolute inset-x-0 top-0 h-[1.5px] bg-gradient-to-r from-transparent via-primary/40 to-transparent" />
             <div className="absolute inset-x-0 bottom-0 h-[1.5px] bg-gradient-to-r from-transparent via-primary/20 to-transparent" />
-            <div className="pointer-events-none absolute -right-16 top-10 h-32 w-32 rounded-full bg-primary/[0.03] blur-2xl" />
+            {/* Glows for life */}
+            <div className="pointer-events-none absolute -right-10 top-20 h-52 w-52 rounded-full bg-primary/[0.07] blur-3xl" />
+            <div className="pointer-events-none absolute -left-10 top-1/2 h-40 w-40 rounded-full bg-primary/[0.05] blur-3xl" />
+            <div className="pointer-events-none absolute right-10 bottom-20 h-36 w-36 rounded-full bg-primary/[0.04] blur-2xl" />
+            <div className="pointer-events-none absolute left-1/2 -translate-x-1/2 top-0 h-32 w-64 rounded-full bg-primary/[0.06] blur-3xl" />
 
             <div className="flex items-center justify-between p-5 pb-0">
               <button onClick={() => setFlipped(false)} className="icon-btn">
