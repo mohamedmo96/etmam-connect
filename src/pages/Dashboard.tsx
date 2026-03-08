@@ -21,6 +21,8 @@ const Dashboard = () => {
   const [form, setForm] = useState<Record<string, any>>({});
   const [newSkill, setNewSkill] = useState("");
   const [activeTab, setActiveTab] = useState("basic");
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (cardData) {
