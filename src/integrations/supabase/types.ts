@@ -14,7 +14,90 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      card_data: {
+        Row: {
+          about_ar: string | null
+          about_en: string | null
+          avatar_url: string | null
+          company_ar: string | null
+          company_en: string | null
+          created_at: string
+          education: Json | null
+          email: string | null
+          experience: Json | null
+          id: string
+          linkedin_url: string | null
+          location_ar: string | null
+          location_en: string | null
+          logo_url: string | null
+          name_ar: string | null
+          name_en: string | null
+          phone: string | null
+          primary_color: string | null
+          skills: Json | null
+          title_ar: string | null
+          title_en: string | null
+          updated_at: string
+          user_id: string
+          website_url: string | null
+          whatsapp_url: string | null
+        }
+        Insert: {
+          about_ar?: string | null
+          about_en?: string | null
+          avatar_url?: string | null
+          company_ar?: string | null
+          company_en?: string | null
+          created_at?: string
+          education?: Json | null
+          email?: string | null
+          experience?: Json | null
+          id?: string
+          linkedin_url?: string | null
+          location_ar?: string | null
+          location_en?: string | null
+          logo_url?: string | null
+          name_ar?: string | null
+          name_en?: string | null
+          phone?: string | null
+          primary_color?: string | null
+          skills?: Json | null
+          title_ar?: string | null
+          title_en?: string | null
+          updated_at?: string
+          user_id: string
+          website_url?: string | null
+          whatsapp_url?: string | null
+        }
+        Update: {
+          about_ar?: string | null
+          about_en?: string | null
+          avatar_url?: string | null
+          company_ar?: string | null
+          company_en?: string | null
+          created_at?: string
+          education?: Json | null
+          email?: string | null
+          experience?: Json | null
+          id?: string
+          linkedin_url?: string | null
+          location_ar?: string | null
+          location_en?: string | null
+          logo_url?: string | null
+          name_ar?: string | null
+          name_en?: string | null
+          phone?: string | null
+          primary_color?: string | null
+          skills?: Json | null
+          title_ar?: string | null
+          title_en?: string | null
+          updated_at?: string
+          user_id?: string
+          website_url?: string | null
+          whatsapp_url?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
