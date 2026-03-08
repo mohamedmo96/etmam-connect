@@ -357,7 +357,7 @@ const BusinessCard = () => {
                   <div className="section-icon"><Heart size={15} className="text-primary" /></div>
                   <h2 className="section-title">{t("about_me")}</h2>
                 </div>
-                <p className="rounded-2xl border border-border/20 bg-secondary/10 p-4 text-[13px] leading-[1.8] text-muted-foreground">
+                <p className="rounded-2xl border border-border/20 bg-secondary/10 p-4 text-[13px] leading-[1.8] font-medium text-foreground/80">
                   {about}
                 </p>
               </motion.div>
