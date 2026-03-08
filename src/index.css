@@ -163,7 +163,6 @@
   .contact-row:hover {
     background: hsl(var(--secondary) / 0.35);
     border-color: hsl(var(--primary) / 0.2);
-    transform: translateX(3px);
   }
 
   /* Skill badge */
