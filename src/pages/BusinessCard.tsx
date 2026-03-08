@@ -125,7 +125,7 @@ const BusinessCard = () => {
             <div className="pointer-events-none absolute -bottom-20 -left-20 h-48 w-48 rounded-full bg-primary/[0.03] blur-3xl" />
 
             {/* Flip button */}
-            <div className="flex items-center justify-end px-5 pt-4 pb-0">
+            <div className="flex items-center justify-end px-6 pt-5 pb-0">
               <button onClick={() => setFlipped(true)} className="icon-btn !p-2">
                 <RotateCw size={14} className="text-foreground/60" />
               </button>
