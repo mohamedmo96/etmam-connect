@@ -312,7 +312,7 @@ const BusinessCard = () => {
 
           {/* ===== BACK ===== */}
           <div
-            className="glass-card absolute inset-0 w-full overflow-y-auto overflow-x-hidden"
+            className="glass-card absolute inset-0 w-full overflow-y-auto overflow-x-hidden scrollbar-none"
             style={{ backfaceVisibility: "hidden", transform: "rotateY(180deg)" }}
           >
             <Corner className="left-3 top-3" />
