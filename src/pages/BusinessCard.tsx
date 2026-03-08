@@ -223,7 +223,6 @@ const BusinessCard = () => {
               {/* Social Icons with labels */}
               <motion.div
                 className="mb-8 flex gap-4"
-                dir="ltr"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.5 }}
