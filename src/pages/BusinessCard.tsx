@@ -359,12 +359,9 @@ const BusinessCard = () => {
 
             <div className="flex items-center justify-between p-5 pb-0">
               <button onClick={() => setFlipped(false)} className="icon-btn">
-                <RotateCw size={16} className="text-muted-foreground" />
+                <RotateCw size={16} className="text-foreground/80" />
               </button>
-              <div className="flex items-center gap-1.5 rounded-full border border-border/30 bg-secondary/20 px-3 py-1">
-                <Sparkles size={10} className="text-primary/60" />
-                <span className="text-[9px] font-semibold tracking-[0.2em] uppercase text-muted-foreground/50">Profile</span>
-              </div>
+            </div>
             </div>
 
             <div className="px-7 pb-8 pt-5">
