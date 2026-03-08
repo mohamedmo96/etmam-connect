@@ -10,12 +10,11 @@ const particleOptions: ISourceOptions = {
   interactivity: {
     events: {
       onHover: { enable: true, mode: "grab" },
-      onClick: { enable: true, mode: ["push", "repulse"] },
+      onClick: { enable: true, mode: "push" },
     },
     modes: {
       grab: { distance: 180, links: { opacity: 0.4 } },
-      push: { quantity: 5 },
-      repulse: { distance: 150, duration: 0.6, speed: 0.3 },
+      push: { quantity: 2 },
     },
   },
   particles: {
