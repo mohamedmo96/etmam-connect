@@ -223,8 +223,8 @@ const BusinessCard = () => {
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.65, duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
                 >
-                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/10">
-                    <Phone size={15} className="text-primary" />
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10">
+                    <Phone size={17} className="text-primary" />
                   </div>
                   <div className="min-w-0 flex-1 text-start">
                     <p className="text-[9px] font-bold uppercase tracking-[0.15em] text-muted-foreground">{t("call")}</p>
