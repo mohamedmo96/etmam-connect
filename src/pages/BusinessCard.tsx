@@ -288,7 +288,7 @@ const BusinessCard = () => {
               >
                 <motion.button
                   onClick={handleSaveContact}
-                  className="save-btn flex flex-1 items-center justify-center gap-2 rounded-xl py-3 text-[13px] font-bold text-primary-foreground"
+                  className="save-btn flex flex-1 items-center justify-center gap-2 rounded-xl py-3.5 text-[14px] font-bold text-primary-foreground"
                   whileHover={{ y: -1 }}
                   whileTap={{ scale: 0.98 }}
                 >
