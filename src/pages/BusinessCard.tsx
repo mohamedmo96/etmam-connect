@@ -246,10 +246,10 @@ const BusinessCard = () => {
                     whileHover={{ y: -2 }}
                     whileTap={{ scale: 0.95 }}
                   >
-                    <div className="icon-btn !rounded-2xl !p-3 group-hover:!border-primary/30">
-                      <Icon size={19} className="text-foreground/70 transition-colors group-hover:text-primary" />
+                    <div className="icon-btn !rounded-2xl !p-3 group-hover:!border-primary/50">
+                      <Icon size={20} className="text-foreground transition-colors group-hover:text-primary" />
                     </div>
-                    <span className="text-[9px] font-medium text-muted-foreground/50 transition-colors group-hover:text-muted-foreground">{label}</span>
+                    <span className="text-[10px] font-semibold text-muted-foreground transition-colors group-hover:text-foreground">{label}</span>
                   </motion.a>
                 ))}
               </motion.div>
