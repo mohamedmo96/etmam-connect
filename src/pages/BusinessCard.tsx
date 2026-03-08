@@ -229,7 +229,7 @@ const BusinessCard = () => {
               >
                 {[
                   { icon: Globe, href: websiteUrl, label: lang === "ar" ? "الموقع" : "Web" },
-                  { icon: Linkedin, href: linkedinUrl, label: "LinkedIn" },
+                  { icon: Linkedin, href: linkedinUrl, label: lang === "ar" ? "لينكدإن" : "LinkedIn" },
                   { icon: MessageCircle, href: d.whatsapp_url || "#", label: lang === "ar" ? "واتساب" : "Chat" },
                   { icon: Mail, href: `mailto:${emailAddr}`, label: lang === "ar" ? "بريد" : "Email" },
                 ].map(({ icon: Icon, href, label }, i) => (
