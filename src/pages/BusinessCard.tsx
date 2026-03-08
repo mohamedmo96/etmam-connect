@@ -362,7 +362,6 @@ const BusinessCard = () => {
                 <RotateCw size={16} className="text-foreground/80" />
               </button>
             </div>
-            </div>
 
             <div className="px-7 pb-8 pt-5">
               {/* Mini header */}
