@@ -282,9 +282,9 @@ const BusinessCard = () => {
               {/* Actions */}
               <motion.div
                 className="flex w-full items-center gap-2.5"
-                initial={{ opacity: 0, y: 10 }}
+                initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.7 }}
+                transition={{ delay: 0.85, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
               >
                 <motion.button
                   onClick={handleSaveContact}
