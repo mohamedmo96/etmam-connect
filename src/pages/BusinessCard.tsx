@@ -297,7 +297,7 @@ const BusinessCard = () => {
                 </motion.button>
                 <motion.button
                   onClick={handleShare}
-                  className="flex h-[44px] w-[44px] items-center justify-center rounded-xl border border-border/40 bg-secondary/20 transition-all hover:border-primary/30 hover:bg-primary/10"
+                  className="flex h-[48px] w-[48px] items-center justify-center rounded-xl border border-border/40 bg-secondary/20 transition-all hover:border-primary/30 hover:bg-primary/10"
                   whileHover={{ y: -1 }}
                   whileTap={{ scale: 0.95 }}
                 >
