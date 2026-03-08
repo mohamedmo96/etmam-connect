@@ -158,7 +158,7 @@ const BusinessCard = () => {
                   </span>
                   <div className="mt-1 flex items-center gap-2">
                     <div className="h-[1px] w-4 bg-muted-foreground/30" />
-                    <span className="text-[10px] font-semibold tracking-[0.15em] text-muted-foreground" style={{ fontFamily: "var(--font-ar)" }}>
+                    <span className="text-[11px] font-bold tracking-[0.1em] text-foreground/80" style={{ fontFamily: "var(--font-ar)" }}>
                       إتمام لتقنية المعلومات
                     </span>
                     <div className="h-[1px] w-4 bg-muted-foreground/30" />
