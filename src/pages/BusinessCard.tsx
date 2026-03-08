@@ -245,7 +245,7 @@ const BusinessCard = () => {
                     <div className="icon-btn !rounded-2xl !p-3 group-hover:!border-primary/50">
                       <Icon size={20} className="text-foreground transition-colors group-hover:text-primary" />
                     </div>
-                    <span className="text-[10px] font-semibold text-muted-foreground transition-colors group-hover:text-foreground">{label}</span>
+                    <span className="text-[11px] font-bold text-foreground/90 transition-colors group-hover:text-primary">{label}</span>
                   </motion.a>
                 ))}
               </motion.div>
