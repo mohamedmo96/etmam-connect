@@ -215,7 +215,7 @@ const BusinessCard = () => {
               </div>
 
               {/* Contact Cards */}
-              <div className="mb-5 w-full space-y-2.5">
+              <div className="mb-7 w-full space-y-3">
                 <motion.a
                   href={`tel:${phoneNum}`}
                   className="flex items-center gap-3.5 rounded-xl border border-border/30 bg-secondary/15 px-4 py-3 transition-all hover:border-primary/25 hover:bg-secondary/25"
