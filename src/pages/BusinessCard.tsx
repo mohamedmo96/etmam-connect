@@ -162,7 +162,7 @@ const BusinessCard = () => {
                 transition={{ delay: 0.5, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
               >
                 <div className="h-px w-5 bg-gradient-to-r from-transparent to-primary/40" />
-                <p className="text-center text-[14px] font-bold text-primary">
+                <p className="text-center text-[15px] font-bold text-primary">
                   {title}
                 </p>
                 <div className="h-px w-5 bg-gradient-to-l from-transparent to-primary/40" />
