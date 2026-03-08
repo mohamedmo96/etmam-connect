@@ -348,20 +348,56 @@ const Dashboard = () => {
 
             {activeTab === "skills" && (
               <div>
-                <div className="mb-4 flex gap-2">
-                  <input
-                    className={inputClass}
-                    placeholder={t("add_skill")}
-                    value={newSkill}
-                    onChange={(e) => setNewSkill(e.target.value)}
-                    onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addSkill())}
-                  />
+                <div className="relative mb-4 flex gap-2">
+                  <div className="relative flex-1">
+                    <input
+                      ref={skillInputRef}
+                      className={inputClass}
+                      placeholder={t("add_skill")}
+                      value={newSkill}
+                      onChange={(e) => { setNewSkill(e.target.value); setShowSuggestions(true); }}
+                      onFocus={() => setShowSuggestions(true)}
+                      onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          e.preventDefault();
+                          if (filteredSuggestions.length > 0) {
+                            selectSuggestion(filteredSuggestions[0]);
+                          } else {
+                            addSkill();
+                          }
+                        }
+                      }}
+                    />
+                    {/* Suggestions dropdown */}
+                    <AnimatePresence>
+                      {showSuggestions && filteredSuggestions.length > 0 && (
+                        <motion.div
+                          initial={{ opacity: 0, y: -5 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -5 }}
+                          className="absolute left-0 right-0 top-full z-50 mt-1.5 overflow-hidden rounded-xl border border-border bg-card shadow-xl shadow-black/20"
+                        >
+                          {filteredSuggestions.map((skill, i) => (
+                            <button
+                              key={skill}
+                              onMouseDown={(e) => { e.preventDefault(); selectSuggestion(skill); }}
+                              className="flex w-full items-center gap-3 px-4 py-3 text-start text-sm font-medium text-foreground transition-colors hover:bg-primary/10 hover:text-primary"
+                            >
+                              <Plus size={14} className="shrink-0 text-primary/50" />
+                              <span>{skill}</span>
+                            </button>
+                          ))}
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
                   <button onClick={addSkill} className="icon-btn shrink-0 !p-3">
                     <Plus size={18} className="text-primary" />
                   </button>
                 </div>
                 <div className="flex flex-wrap gap-2">
-                  {(Array.isArray(form.skills) ? form.skills : []).map((skill: string, i: number) => (
+                  {currentSkills.map((skill: string, i: number) => (
                     <motion.span
                       key={i}
                       layout
