@@ -291,11 +291,11 @@ const BusinessCard = () => {
                     <MapPin size={17} className="text-primary" />
                   </div>
                   <div className="min-w-0 flex-1">
-                    <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-muted-foreground/60">{t("location")}</p>
-                    <p className="text-[14px] font-medium text-foreground">{locationText}</p>
+                    <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-muted-foreground">{t("location")}</p>
+                    <p className="text-[15px] font-semibold text-foreground">{locationText}</p>
                   </div>
-                  <div className="h-5 w-5 flex items-center justify-center rounded-full bg-primary/10">
-                    <MapPin size={10} className="text-primary/60" />
+                  <div className="h-5 w-5 flex items-center justify-center rounded-full bg-primary/15">
+                    <MapPin size={10} className="text-primary" />
                   </div>
                 </motion.div>
               </div>
