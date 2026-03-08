@@ -440,15 +440,19 @@ const BusinessCard = () => {
                   <div className="section-icon"><Briefcase size={15} className="text-primary" /></div>
                   <h2 className="section-title">{t("experience")}</h2>
                 </div>
-                <div className="space-y-2.5">
+                <div className="space-y-3">
                   {experience.map((exp: any, i: number) => (
-                    <div key={i} className="flex items-center gap-3 rounded-2xl border border-border/20 bg-secondary/10 px-4 py-3.5">
-                      <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-primary/10">
-                        <Briefcase size={12} className="text-primary/70" />
-                      </div>
-                      <div>
-                        <p className="text-[13px] font-semibold text-foreground">{lang === "ar" ? exp.title_ar : exp.title_en}</p>
-                        <p className="text-[11px] text-muted-foreground">{lang === "ar" ? exp.company_ar : exp.company_en}</p>
+                    <div key={i} className="relative overflow-hidden rounded-2xl border border-border/30 bg-gradient-to-br from-secondary/20 to-secondary/5 p-4">
+                      {/* Accent left bar */}
+                      <div className="absolute left-0 top-0 h-full w-[3px] bg-gradient-to-b from-primary to-primary/30" />
+                      <div className="flex items-start gap-3.5 ps-3">
+                        <div className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 border border-primary/20">
+                          <Briefcase size={16} className="text-primary" />
+                        </div>
+                        <div className="flex-1">
+                          <p className="text-[14px] font-bold text-foreground">{lang === "ar" ? exp.title_ar : exp.title_en}</p>
+                          <p className="mt-0.5 text-[12px] font-medium text-muted-foreground">{lang === "ar" ? exp.company_ar : exp.company_en}</p>
+                        </div>
                       </div>
                     </div>
                   ))}
@@ -465,15 +469,19 @@ const BusinessCard = () => {
                   <div className="section-icon"><GraduationCap size={15} className="text-primary" /></div>
                   <h2 className="section-title">{t("education")}</h2>
                 </div>
-                <div className="space-y-2.5">
+                <div className="space-y-3">
                   {education.map((edu: any, i: number) => (
-                    <div key={i} className="flex items-center gap-3 rounded-2xl border border-border/20 bg-secondary/10 px-4 py-3.5">
-                      <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-primary/10">
-                        <GraduationCap size={12} className="text-primary/70" />
-                      </div>
-                      <div>
-                        <p className="text-[13px] font-semibold text-foreground">{lang === "ar" ? edu.degree_ar : edu.degree_en}</p>
-                        <p className="text-[11px] text-muted-foreground">{lang === "ar" ? edu.field_ar : edu.field_en}</p>
+                    <div key={i} className="relative overflow-hidden rounded-2xl border border-border/30 bg-gradient-to-br from-secondary/20 to-secondary/5 p-4">
+                      {/* Accent left bar */}
+                      <div className="absolute left-0 top-0 h-full w-[3px] bg-gradient-to-b from-primary to-primary/30" />
+                      <div className="flex items-start gap-3.5 ps-3">
+                        <div className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 border border-primary/20">
+                          <GraduationCap size={16} className="text-primary" />
+                        </div>
+                        <div className="flex-1">
+                          <p className="text-[14px] font-bold text-foreground">{lang === "ar" ? edu.degree_ar : edu.degree_en}</p>
+                          <p className="mt-0.5 text-[12px] font-medium text-muted-foreground">{lang === "ar" ? edu.field_ar : edu.field_en}</p>
+                        </div>
                       </div>
                     </div>
                   ))}
