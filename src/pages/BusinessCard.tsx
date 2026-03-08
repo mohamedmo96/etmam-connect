@@ -117,192 +117,191 @@ const BusinessCard = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, ease: "easeOut" }}
           >
-            {/* Decorative corners */}
-            <Corner className="left-3 top-3" />
-            <Corner className="right-3 top-3 rotate-90" />
-            <Corner className="bottom-3 left-3 -rotate-90" />
-            <Corner className="bottom-3 right-3 rotate-180" />
+            {/* Top accent bar */}
+            <div className="h-[2px] bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
 
-            {/* Top accent */}
-            <div className="absolute inset-x-0 top-0 h-[1.5px] bg-gradient-to-r from-transparent via-primary/40 to-transparent" />
-            {/* Bottom accent */}
-            <div className="absolute inset-x-0 bottom-0 h-[1.5px] bg-gradient-to-r from-transparent via-primary/20 to-transparent" />
+            {/* Background glow */}
+            <div className="pointer-events-none absolute -right-20 -top-20 h-48 w-48 rounded-full bg-primary/[0.04] blur-3xl" />
+            <div className="pointer-events-none absolute -bottom-20 -left-20 h-48 w-48 rounded-full bg-primary/[0.03] blur-3xl" />
 
-            {/* Background decorative circles */}
-            <div className="pointer-events-none absolute -right-20 -top-20 h-40 w-40 rounded-full bg-primary/[0.03] blur-2xl" />
-            <div className="pointer-events-none absolute -bottom-16 -left-16 h-32 w-32 rounded-full bg-primary/[0.04] blur-2xl" />
-
-            {/* Header */}
-            <div className="flex items-center justify-end p-5 pb-0">
-              <button onClick={() => setFlipped(true)} className="icon-btn">
-                <RotateCw size={16} className="text-foreground/80" />
+            {/* Flip button */}
+            <div className="flex items-center justify-end px-5 pt-4 pb-0">
+              <button onClick={() => setFlipped(true)} className="icon-btn !p-2">
+                <RotateCw size={14} className="text-foreground/60" />
               </button>
             </div>
 
-            <div className="flex flex-col items-center px-8 pb-8 pt-4">
-              {/* Avatar with double ring */}
+            <div className="flex flex-col items-center px-7 pb-7 pt-2">
+              {/* Avatar */}
               <motion.div
-                className="relative mb-6"
-                initial={{ opacity: 0, scale: 0.7 }}
+                className="relative mb-5"
+                initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.25, type: "spring", stiffness: 150, damping: 20 }}
+                transition={{ delay: 0.2, type: "spring", stiffness: 200, damping: 25 }}
               >
-                <div className="absolute -inset-2 rounded-full border border-dashed border-primary/25 animate-[spin_30s_linear_infinite]" />
-                <div className="absolute -inset-2 rounded-full">
-                  <div className="absolute left-1/2 top-0 h-1.5 w-1.5 -translate-x-1/2 rounded-full bg-primary/60" />
-                  <div className="absolute bottom-0 left-1/2 h-1.5 w-1.5 -translate-x-1/2 rounded-full bg-primary/60" />
-                  <div className="absolute left-0 top-1/2 h-1.5 w-1.5 -translate-y-1/2 rounded-full bg-primary/60" />
-                  <div className="absolute right-0 top-1/2 h-1.5 w-1.5 -translate-y-1/2 rounded-full bg-primary/60" />
-                </div>
-                <div className="glow-border h-[110px] w-[110px] overflow-hidden rounded-full">
+                <div className="absolute -inset-[6px] rounded-full bg-gradient-to-br from-primary/30 via-primary/10 to-transparent" />
+                <div className="absolute -inset-[6px] rounded-full border border-primary/20" />
+                <div className="relative h-24 w-24 overflow-hidden rounded-full border-2 border-background">
                   <img src={d.avatar_url || profilePhoto} alt={name} className="h-full w-full object-cover" />
                 </div>
               </motion.div>
 
-              {/* Name */}
+              {/* Name & Info */}
               <motion.h1
-                className="mb-1 text-center text-[22px] font-extrabold leading-tight text-foreground"
-                initial={{ opacity: 0, y: 8 }}
+                className="mb-0.5 text-center text-[21px] font-extrabold leading-tight text-foreground"
+                initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.35 }}
+                transition={{ delay: 0.3 }}
               >
                 {name}
               </motion.h1>
-              {/* Title */}
               <motion.p
-                className="mb-1 text-center text-[15px] font-bold text-primary"
-                initial={{ opacity: 0, y: 8 }}
+                className="mb-0.5 text-center text-[14px] font-bold text-primary"
+                initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4 }}
+                transition={{ delay: 0.35 }}
               >
                 {title}
               </motion.p>
-              {/* Company */}
               <motion.p
-                className="mb-7 text-center text-[13px] font-medium text-muted-foreground"
-                initial={{ opacity: 0, y: 8 }}
+                className="mb-5 text-center text-[12px] font-medium text-muted-foreground"
+                initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.45 }}
+                transition={{ delay: 0.4 }}
               >
                 {company}
               </motion.p>
 
-              {/* Social Icons with labels */}
+              {/* Quick Actions - horizontal row */}
               <motion.div
-                className="mb-8 flex gap-4"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.5 }}
+                className="mb-5 flex w-full items-center justify-center gap-3"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.45 }}
               >
                 {[
-                  { icon: Globe, href: websiteUrl, label: lang === "ar" ? "الموقع" : "Web" },
-                  { icon: Linkedin, href: linkedinUrl, label: lang === "ar" ? "لينكدإن" : "LinkedIn" },
-                  { icon: MessageCircle, href: d.whatsapp_url || "#", label: lang === "ar" ? "واتساب" : "Chat" },
-                  { icon: Mail, href: `mailto:${emailAddr}`, label: lang === "ar" ? "بريد" : "Email" },
-                ].map(({ icon: Icon, href, label }, i) => (
+                  { icon: Globe, href: websiteUrl, tip: lang === "ar" ? "الموقع" : "Web" },
+                  { icon: Linkedin, href: linkedinUrl, tip: lang === "ar" ? "لينكدإن" : "LinkedIn" },
+                  { icon: MessageCircle, href: d.whatsapp_url || "#", tip: lang === "ar" ? "واتساب" : "WhatsApp" },
+                  { icon: Mail, href: `mailto:${emailAddr}`, tip: lang === "ar" ? "بريد" : "Email" },
+                  { icon: Phone, href: `tel:${phoneNum}`, tip: lang === "ar" ? "اتصال" : "Call" },
+                ].map(({ icon: Icon, href, tip }, i) => (
                   <motion.a
                     key={i}
                     href={href}
-                    target="_blank"
+                    target={href.startsWith("http") ? "_blank" : undefined}
                     rel="noopener noreferrer"
-                    className="group flex flex-col items-center gap-1.5"
+                    title={tip}
+                    className="group flex h-11 w-11 items-center justify-center rounded-xl border border-border/40 bg-secondary/20 transition-all duration-200 hover:border-primary/40 hover:bg-primary/10 hover:shadow-lg hover:shadow-primary/5"
                     whileHover={{ y: -2 }}
-                    whileTap={{ scale: 0.95 }}
+                    whileTap={{ scale: 0.93 }}
                   >
-                    <div className="icon-btn !rounded-2xl !p-3 group-hover:!border-primary/50">
-                      <Icon size={20} className="text-foreground transition-colors group-hover:text-primary" />
-                    </div>
-                    <span className="text-[11px] font-bold text-foreground/90 transition-colors group-hover:text-primary">{label}</span>
+                    <Icon size={18} className="text-foreground/70 transition-colors group-hover:text-primary" />
                   </motion.a>
                 ))}
               </motion.div>
 
-              {/* Separator */}
-              <div className="mb-7 flex w-full items-center gap-3">
-                <div className="h-px flex-1 bg-gradient-to-r from-transparent to-border/50" />
-                <div className="h-1 w-1 rounded-full bg-primary/30" />
-                <div className="h-px flex-1 bg-gradient-to-l from-transparent to-border/50" />
+              {/* Divider */}
+              <div className="mb-5 flex w-full items-center gap-4">
+                <div className="h-px flex-1 bg-gradient-to-r from-transparent to-border/40" />
+                <div className="h-1 w-1 rounded-full bg-primary/25" />
+                <div className="h-px flex-1 bg-gradient-to-l from-transparent to-border/40" />
               </div>
 
-              {/* Contact Details */}
-              <div className="mb-7 w-full space-y-3">
+              {/* Contact Cards */}
+              <div className="mb-5 w-full space-y-2.5">
                 <motion.a
                   href={`tel:${phoneNum}`}
-                  className="contact-row"
+                  className="flex items-center gap-3.5 rounded-xl border border-border/30 bg-secondary/15 px-4 py-3 transition-all hover:border-primary/25 hover:bg-secondary/25"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.5 }}
+                >
+                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/10">
+                    <Phone size={15} className="text-primary" />
+                  </div>
+                  <div className="min-w-0 flex-1 text-start">
+                    <p className="text-[9px] font-bold uppercase tracking-[0.15em] text-muted-foreground/70">{t("call")}</p>
+                    <p className="text-[14px] font-semibold text-foreground" dir="ltr" style={{ textAlign: lang === "ar" ? "right" : "left" }}>{phoneNum}</p>
+                  </div>
+                </motion.a>
+
+                <motion.a
+                  href={`mailto:${emailAddr}`}
+                  className="flex items-center gap-3.5 rounded-xl border border-border/30 bg-secondary/15 px-4 py-3 transition-all hover:border-primary/25 hover:bg-secondary/25"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.55 }}
                 >
-                  <div className="section-icon shrink-0 !h-11 !w-11 !rounded-full">
-                    <Phone size={17} className="text-primary" />
+                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/10">
+                    <Mail size={15} className="text-primary" />
                   </div>
                   <div className="min-w-0 flex-1 text-start">
-                    <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-muted-foreground">{t("call")}</p>
-                    <p className="text-[15px] font-semibold text-foreground" dir="ltr" style={{ textAlign: lang === "ar" ? "right" : "left" }}>{phoneNum}</p>
+                    <p className="text-[9px] font-bold uppercase tracking-[0.15em] text-muted-foreground/70">{t("email")}</p>
+                    <p className="text-[14px] font-semibold text-foreground" dir="ltr" style={{ textAlign: lang === "ar" ? "right" : "left" }}>{emailAddr}</p>
                   </div>
                 </motion.a>
+
                 <motion.div
-                  className="contact-row"
+                  className="flex items-center gap-3.5 rounded-xl border border-border/30 bg-secondary/15 px-4 py-3"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.6 }}
                 >
-                  <div className="section-icon shrink-0 !h-11 !w-11 !rounded-full">
-                    <MapPin size={17} className="text-primary" />
+                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/10">
+                    <MapPin size={15} className="text-primary" />
                   </div>
                   <div className="min-w-0 flex-1 text-start">
-                    <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-muted-foreground">{t("location")}</p>
-                    <p className="text-[15px] font-semibold text-foreground">{locationText}</p>
+                    <p className="text-[9px] font-bold uppercase tracking-[0.15em] text-muted-foreground/70">{t("location")}</p>
+                    <p className="text-[14px] font-semibold text-foreground">{locationText}</p>
                   </div>
                 </motion.div>
               </div>
 
-              {/* QR Code with frame */}
+              {/* QR Code - compact */}
               <motion.div
-                className="mb-8 flex w-full flex-col items-center"
+                className="mb-5 flex flex-col items-center"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.65 }}
               >
-                <p className="mb-3 text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/50">
+                <p className="mb-2.5 text-[9px] font-bold uppercase tracking-[0.2em] text-muted-foreground/50">
                   {t("scan_linkedin")}
                 </p>
-                <div className="relative rounded-2xl border border-border/30 bg-secondary/10 p-5">
-                  {/* QR corner accents */}
-                  <div className="absolute left-2 top-2 h-3 w-3 border-l border-t border-primary/30 rounded-tl-sm" />
-                  <div className="absolute right-2 top-2 h-3 w-3 border-r border-t border-primary/30 rounded-tr-sm" />
-                  <div className="absolute bottom-2 left-2 h-3 w-3 border-l border-b border-primary/30 rounded-bl-sm" />
-                  <div className="absolute bottom-2 right-2 h-3 w-3 border-r border-b border-primary/30 rounded-br-sm" />
-                  <QRCodeSVG value={linkedinUrl} size={110} bgColor="transparent" fgColor="hsl(217, 91%, 60%)" />
+                <div className="rounded-xl border border-border/25 bg-secondary/10 p-3.5">
+                  <QRCodeSVG value={linkedinUrl} size={90} bgColor="transparent" fgColor="hsl(210, 100%, 55%)" />
                 </div>
               </motion.div>
 
               {/* Actions */}
               <motion.div
-                className="flex w-full items-center gap-3"
-                initial={{ opacity: 0, y: 15 }}
+                className="flex w-full items-center gap-2.5"
+                initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.7 }}
               >
                 <motion.button
                   onClick={handleSaveContact}
-                  className="save-btn flex flex-1 items-center justify-center gap-2.5 rounded-2xl py-3.5 text-sm font-semibold text-primary-foreground"
+                  className="save-btn flex flex-1 items-center justify-center gap-2 rounded-xl py-3 text-[13px] font-bold text-primary-foreground"
                   whileHover={{ y: -1 }}
                   whileTap={{ scale: 0.98 }}
                 >
-                  <UserPlus size={17} />
+                  <UserPlus size={16} />
                   {t("save_contact")}
                 </motion.button>
                 <motion.button
                   onClick={handleShare}
-                  className="icon-btn !p-3.5"
+                  className="flex h-[44px] w-[44px] items-center justify-center rounded-xl border border-border/40 bg-secondary/20 transition-all hover:border-primary/30 hover:bg-primary/10"
                   whileHover={{ y: -1 }}
                   whileTap={{ scale: 0.95 }}
                 >
-                  <Share2 size={18} className="text-muted-foreground" />
+                  <Share2 size={16} className="text-foreground/70" />
                 </motion.button>
               </motion.div>
             </div>
+
+            {/* Bottom accent */}
+            <div className="h-[2px] bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
           </motion.div>
 
           {/* ===== BACK ===== */}
