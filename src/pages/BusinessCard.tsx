@@ -266,7 +266,7 @@ const BusinessCard = () => {
 
               {/* QR Code - compact */}
               <motion.div
-                className="mb-5 flex flex-col items-center"
+                className="mb-7 flex flex-col items-center"
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.8, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
