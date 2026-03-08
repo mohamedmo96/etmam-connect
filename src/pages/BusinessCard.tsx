@@ -353,7 +353,7 @@ const BusinessCard = () => {
 
               {/* About */}
               <motion.div
-                className="mb-6"
+                className="mb-7"
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: flipped ? 1 : 0, y: flipped ? 0 : 8 }}
                 transition={{ delay: 0.3, duration: 0.35 }}
@@ -362,14 +362,17 @@ const BusinessCard = () => {
                   <div className="section-icon"><Heart size={15} className="text-primary" /></div>
                   <h2 className="section-title">{t("about_me")}</h2>
                 </div>
-                <p className="rounded-2xl border border-border/20 bg-secondary/10 p-4 text-[13px] leading-[1.8] font-medium text-foreground/80">
-                  {about}
-                </p>
+                <div className="relative rounded-2xl border border-border/20 bg-secondary/10 p-5">
+                  <div className="absolute inset-y-0 start-0 w-[3px] rounded-full bg-gradient-to-b from-primary/50 via-primary/20 to-transparent" />
+                  <p className="ps-3 text-[13px] leading-[1.9] font-medium text-foreground/90">
+                    {about}
+                  </p>
+                </div>
               </motion.div>
 
               {/* Skills */}
               <motion.div
-                className="mb-6"
+                className="mb-7"
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: flipped ? 1 : 0, y: flipped ? 0 : 8 }}
                 transition={{ delay: 0.4, duration: 0.35 }}
@@ -378,17 +381,18 @@ const BusinessCard = () => {
                   <div className="section-icon"><Award size={15} className="text-primary" /></div>
                   <h2 className="section-title">{t("skills")}</h2>
                 </div>
-                <div className="flex flex-wrap gap-2">
+                <div className="grid grid-cols-2 gap-2.5">
                   {skills.map((skill: string, i: number) => (
-                    <motion.span
+                    <motion.div
                       key={i}
-                      className="skill-badge"
-                      initial={{ opacity: 0, scale: 0.9 }}
-                      animate={{ opacity: flipped ? 1 : 0, scale: flipped ? 1 : 0.9 }}
+                      className="flex items-center gap-2.5 rounded-xl border border-primary/15 bg-primary/[0.06] px-3.5 py-2.5"
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={{ opacity: flipped ? 1 : 0, x: flipped ? 0 : -10 }}
                       transition={{ delay: 0.45 + i * 0.05, duration: 0.25 }}
                     >
-                      {skill}
-                    </motion.span>
+                      <div className="h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />
+                      <span className="text-[12px] font-semibold text-foreground/90">{skill}</span>
+                    </motion.div>
                   ))}
                 </div>
               </motion.div>
