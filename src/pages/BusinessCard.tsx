@@ -16,11 +16,11 @@ const BusinessCard = () => {
   const { data: cardData, isLoading } = useCardData();
   const cardRef = useRef<HTMLDivElement>(null);
 
-  // 3D tilt effect
+  // Very subtle 3D tilt
   const x = useMotionValue(0);
   const y = useMotionValue(0);
-  const rotateX = useSpring(useTransform(y, [-150, 150], [8, -8]), { stiffness: 300, damping: 30 });
-  const rotateY = useSpring(useTransform(x, [-150, 150], [-8, 8]), { stiffness: 300, damping: 30 });
+  const rotateX = useSpring(useTransform(y, [-300, 300], [2, -2]), { stiffness: 150, damping: 40 });
+  const rotateY = useSpring(useTransform(x, [-300, 300], [-2, 2]), { stiffness: 150, damping: 40 });
 
   const handleMouseMove = (e: React.MouseEvent) => {
     if (!cardRef.current || flipped) return;
