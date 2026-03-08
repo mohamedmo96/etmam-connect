@@ -346,7 +346,7 @@ const BusinessCard = () => {
 
           {/* ===== BACK ===== */}
           <div
-            className="glass-card absolute inset-0 w-full overflow-auto"
+            className="glass-card absolute inset-0 w-full overflow-y-auto overflow-x-hidden"
             style={{ backfaceVisibility: "hidden", transform: "rotateY(180deg)" }}
           >
             <Corner className="left-3 top-3" />
