@@ -1,13 +1,14 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   LogOut, Save, Eye, User, Phone, Globe, Award, Briefcase, GraduationCap,
-  Plus, X, Loader2, Check, Languages,
+  Plus, X, Loader2, Check, Languages, Camera, Upload,
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useCardData, useUpdateCardData } from "@/hooks/useCardData";
+import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
 const Dashboard = () => {
@@ -20,6 +21,8 @@ const Dashboard = () => {
   const [form, setForm] = useState<Record<string, any>>({});
   const [newSkill, setNewSkill] = useState("");
   const [activeTab, setActiveTab] = useState("basic");
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (cardData) {
@@ -66,6 +69,47 @@ const Dashboard = () => {
     const skills = Array.isArray(form.skills) ? [...form.skills] : [];
     skills.splice(i, 1);
     handleChange("skills", skills);
+  };
+
+  const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !user) return;
+    
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
+    if (!allowedTypes.includes(file.type)) {
+      toast.error(lang === "ar" ? "يرجى رفع صورة (JPG, PNG, WEBP)" : "Please upload an image (JPG, PNG, WEBP)");
+      return;
+    }
+    
+    setUploading(true);
+    try {
+      const ext = file.name.split('.').pop();
+      const filePath = `${user.id}/avatar.${ext}`;
+      
+      const { error: uploadError } = await supabase.storage
+        .from('avatars')
+        .upload(filePath, file, { upsert: true });
+      
+      if (uploadError) throw uploadError;
+      
+      const { data: { publicUrl } } = supabase.storage
+        .from('avatars')
+        .getPublicUrl(filePath);
+      
+      // Add cache buster
+      const avatarUrl = `${publicUrl}?t=${Date.now()}`;
+      handleChange("avatar_url", avatarUrl);
+      
+      // Auto-save
+      if (form.id) {
+        await updateCard.mutateAsync({ ...form, avatar_url: avatarUrl, id: form.id } as any);
+        toast.success(lang === "ar" ? "تم رفع الصورة بنجاح" : "Photo uploaded successfully");
+      }
+    } catch (err: any) {
+      toast.error(err.message);
+    } finally {
+      setUploading(false);
+    }
   };
 
   const tabs = [
@@ -145,6 +189,49 @@ const Dashboard = () => {
           >
             {activeTab === "basic" && (
               <div className="grid gap-5 md:grid-cols-2">
+                {/* Avatar Upload */}
+                <div className="md:col-span-2 flex flex-col items-center gap-3 mb-2">
+                  <label className={labelClass}>{lang === "ar" ? "الصورة الشخصية" : "Profile Photo"}</label>
+                  <div className="relative group">
+                    <div className="h-24 w-24 rounded-full overflow-hidden border-2 border-border bg-secondary/30">
+                      {form.avatar_url ? (
+                        <img src={form.avatar_url} alt="Avatar" className="h-full w-full object-cover" />
+                      ) : (
+                        <div className="flex h-full w-full items-center justify-center">
+                          <User size={32} className="text-muted-foreground" />
+                        </div>
+                      )}
+                    </div>
+                    <button
+                      onClick={() => fileInputRef.current?.click()}
+                      disabled={uploading}
+                      className="absolute inset-0 flex items-center justify-center rounded-full bg-background/60 opacity-0 transition-opacity group-hover:opacity-100"
+                    >
+                      {uploading ? (
+                        <Loader2 size={20} className="animate-spin text-primary" />
+                      ) : (
+                        <Camera size={20} className="text-primary" />
+                      )}
+                    </button>
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      accept="image/jpeg,image/png,image/webp"
+                      onChange={handleAvatarUpload}
+                      className="hidden"
+                    />
+                  </div>
+                  <button
+                    onClick={() => fileInputRef.current?.click()}
+                    disabled={uploading}
+                    className="flex items-center gap-1.5 text-xs font-medium text-primary hover:underline"
+                  >
+                    <Upload size={12} />
+                    {uploading
+                      ? (lang === "ar" ? "جاري الرفع..." : "Uploading...")
+                      : (lang === "ar" ? "رفع صورة" : "Upload Photo")}
+                  </button>
+                </div>
                 <div>
                   <label className={labelClass}>{t("name")} ({t("english")})</label>
                   <input className={inputClass} value={form.name_en || ""} onChange={(e) => handleChange("name_en", e.target.value)} />

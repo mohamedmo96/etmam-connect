@@ -5,7 +5,7 @@ import { motion, useMotionValue, useTransform, useSpring } from "framer-motion";
 import {
   RotateCw, Globe, Linkedin, MessageCircle, Mail, Phone, MapPin,
   UserPlus, Share2, Settings, Heart, Award, Briefcase, GraduationCap,
-  Languages, Loader2, Sparkles, Zap,
+  Languages, Loader2, Zap,
 } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -133,14 +133,10 @@ const BusinessCard = () => {
             <div className="pointer-events-none absolute -bottom-16 -left-16 h-32 w-32 rounded-full bg-primary/[0.04] blur-2xl" />
 
             {/* Header */}
-            <div className="flex items-center justify-between p-5 pb-0">
+            <div className="flex items-center justify-end p-5 pb-0">
               <button onClick={() => setFlipped(true)} className="icon-btn">
                 <RotateCw size={16} className="text-foreground/80" />
               </button>
-              <div className="flex items-center gap-1.5 rounded-full border border-border/50 bg-secondary/30 px-3 py-1">
-                <Sparkles size={10} className="text-primary" />
-                <span className="text-[9px] font-semibold tracking-[0.2em] uppercase text-muted-foreground">Digital Card</span>
-              </div>
             </div>
 
             <div className="flex flex-col items-center px-8 pb-8 pt-5">
@@ -162,7 +158,7 @@ const BusinessCard = () => {
                   </span>
                   <div className="mt-1 flex items-center gap-2">
                     <div className="h-[1px] w-4 bg-muted-foreground/30" />
-                    <span className="text-[10px] font-semibold tracking-[0.15em] text-muted-foreground" style={{ fontFamily: "var(--font-ar)" }}>
+                    <span className="text-[11px] font-bold tracking-[0.1em] text-foreground/80" style={{ fontFamily: "var(--font-ar)" }}>
                       إتمام لتقنية المعلومات
                     </span>
                     <div className="h-[1px] w-4 bg-muted-foreground/30" />
@@ -249,7 +245,7 @@ const BusinessCard = () => {
                     <div className="icon-btn !rounded-2xl !p-3 group-hover:!border-primary/50">
                       <Icon size={20} className="text-foreground transition-colors group-hover:text-primary" />
                     </div>
-                    <span className="text-[10px] font-semibold text-muted-foreground transition-colors group-hover:text-foreground">{label}</span>
+                    <span className="text-[11px] font-bold text-foreground/90 transition-colors group-hover:text-primary">{label}</span>
                   </motion.a>
                 ))}
               </motion.div>
@@ -363,12 +359,8 @@ const BusinessCard = () => {
 
             <div className="flex items-center justify-between p-5 pb-0">
               <button onClick={() => setFlipped(false)} className="icon-btn">
-                <RotateCw size={16} className="text-muted-foreground" />
+                <RotateCw size={16} className="text-foreground/80" />
               </button>
-              <div className="flex items-center gap-1.5 rounded-full border border-border/30 bg-secondary/20 px-3 py-1">
-                <Sparkles size={10} className="text-primary/60" />
-                <span className="text-[9px] font-semibold tracking-[0.2em] uppercase text-muted-foreground/50">Profile</span>
-              </div>
             </div>
 
             <div className="px-7 pb-8 pt-5">
