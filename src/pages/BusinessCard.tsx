@@ -146,30 +146,29 @@ const BusinessCard = () => {
                 </div>
               </motion.div>
 
-              {/* Name & Info */}
+              {/* Name & Title & Company */}
               <motion.h1
-                className="mb-1.5 text-center text-[24px] font-extrabold leading-tight tracking-tight text-foreground"
+                className="mb-2 text-center text-[26px] font-extrabold leading-tight tracking-tight text-foreground"
                 initial={{ opacity: 0, y: 15 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
               >
                 {name}
               </motion.h1>
+
               <motion.div
-                className="mb-1.5 flex items-center justify-center gap-2"
-                initial={{ opacity: 0, y: 15 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.5, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                className="mb-3 inline-flex items-center gap-2 rounded-full border border-primary/25 bg-primary/10 px-5 py-1.5"
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.5, duration: 0.4, type: "spring", stiffness: 200, damping: 20 }}
               >
-                <div className="h-px w-5 bg-gradient-to-r from-transparent to-primary/40" />
-                <p className="text-center text-[15px] font-bold text-primary">
-                  {title}
-                </p>
-                <div className="h-px w-5 bg-gradient-to-l from-transparent to-primary/40" />
+                <Briefcase size={13} className="text-primary" />
+                <span className="text-[14px] font-bold text-primary">{title}</span>
               </motion.div>
+
               <motion.p
-                className="mb-8 text-center text-[13px] font-semibold text-muted-foreground"
-                initial={{ opacity: 0, y: 15 }}
+                className="mb-8 text-center text-[13px] font-semibold text-foreground/70"
+                initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.55, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
               >
