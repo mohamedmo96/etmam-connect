@@ -1,4 +1,5 @@
 import { useState, useRef } from "react";
+import profilePhoto from "@/assets/profile-photo.png";
 import { Link } from "react-router-dom";
 import { motion, useMotionValue, useTransform, useSpring } from "framer-motion";
 import {
@@ -158,13 +159,7 @@ const BusinessCard = () => {
                 transition={{ delay: 0.3, type: "spring", stiffness: 200 }}
                 whileHover={{ scale: 1.05 }}
               >
-                {d.avatar_url ? (
-                  <img src={d.avatar_url} alt={name} className="h-full w-full object-cover" />
-                ) : (
-                  <div className="flex h-full w-full items-center justify-center bg-secondary text-3xl font-bold text-primary">
-                    {initials}
-                  </div>
-                )}
+                <img src={d.avatar_url || profilePhoto} alt={name} className="h-full w-full object-cover" />
               </motion.div>
 
               {/* Info with stagger */}
