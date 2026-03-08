@@ -305,6 +305,9 @@ const BusinessCard = () => {
             className="glass-card absolute inset-0 w-full overflow-auto"
             style={{ backfaceVisibility: "hidden", transform: "rotateY(180deg)" }}
           >
+            {/* Top accent gradient */}
+            <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-transparent via-primary/60 to-transparent" />
+            
             <div className="p-4">
               <button onClick={() => setFlipped(false)} className="icon-btn">
                 <RotateCw size={18} className="text-muted-foreground" />
@@ -313,78 +316,121 @@ const BusinessCard = () => {
 
             <div className="px-8 pb-8">
               {/* About */}
-              <motion.div className="mb-8" initial={{ opacity: 0 }} animate={{ opacity: flipped ? 1 : 0 }} transition={{ delay: 0.3 }}>
-                <div className="mb-3 flex items-center gap-2">
-                  <Heart size={20} className="text-primary" />
-                  <h2 className="text-lg font-bold text-foreground">{t("about_me")}</h2>
+              <motion.div
+                className="mb-6"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: flipped ? 1 : 0, y: flipped ? 0 : 10 }}
+                transition={{ delay: 0.3, duration: 0.4 }}
+              >
+                <div className="mb-3 flex items-center gap-2.5">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10">
+                    <Heart size={16} className="text-primary" />
+                  </div>
+                  <h2 className="text-base font-bold text-foreground">{t("about_me")}</h2>
                 </div>
-                <p className="text-sm leading-relaxed text-muted-foreground">{about}</p>
+                <p className="rounded-xl border border-border/50 bg-secondary/20 p-4 text-sm leading-relaxed text-muted-foreground">
+                  {about}
+                </p>
               </motion.div>
 
-              <div className="mb-8 h-px w-full bg-gradient-to-r from-transparent via-glass-border/40 to-transparent" />
-
               {/* Skills */}
-              <div className="mb-8">
-                <div className="mb-4 flex items-center gap-2">
-                  <Award size={20} className="text-primary" />
-                  <h2 className="text-lg font-bold text-foreground">{t("skills")}</h2>
+              <motion.div
+                className="mb-6"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: flipped ? 1 : 0, y: flipped ? 0 : 10 }}
+                transition={{ delay: 0.4, duration: 0.4 }}
+              >
+                <div className="mb-3 flex items-center gap-2.5">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10">
+                    <Award size={16} className="text-primary" />
+                  </div>
+                  <h2 className="text-base font-bold text-foreground">{t("skills")}</h2>
                 </div>
                 <div className="flex flex-wrap gap-2">
                   {skills.map((skill: string, i: number) => (
                     <motion.span
                       key={i}
-                      className="rounded-full border border-primary/40 px-4 py-1.5 text-xs font-medium text-primary"
-                      initial={{ opacity: 0, scale: 0.8 }}
-                      animate={{ opacity: flipped ? 1 : 0, scale: flipped ? 1 : 0.8 }}
-                      transition={{ delay: 0.4 + i * 0.05 }}
+                      className="rounded-lg border border-primary/20 bg-primary/5 px-3 py-1.5 text-xs font-medium text-primary backdrop-blur-sm"
+                      initial={{ opacity: 0, y: 8 }}
+                      animate={{ opacity: flipped ? 1 : 0, y: flipped ? 0 : 8 }}
+                      transition={{ delay: 0.45 + i * 0.06, duration: 0.3 }}
                     >
                       {skill}
                     </motion.span>
                   ))}
                 </div>
-              </div>
+              </motion.div>
 
-              <div className="mb-8 h-px w-full bg-gradient-to-r from-transparent via-glass-border/40 to-transparent" />
+              {/* Divider */}
+              <div className="mb-6 h-px w-full bg-gradient-to-r from-transparent via-border to-transparent" />
 
               {/* Experience */}
-              <div className="mb-8">
-                <div className="mb-4 flex items-center gap-2">
-                  <Briefcase size={20} className="text-primary" />
-                  <h2 className="text-lg font-bold text-foreground">{t("experience")}</h2>
-                </div>
-                {experience.map((exp: any, i: number) => (
-                  <div key={i} className="flex items-start gap-3">
-                    <div className="mt-1.5 h-2.5 w-2.5 shrink-0 rounded-full bg-primary" />
-                    <div>
-                      <p className="text-sm font-semibold text-foreground">
-                        {lang === "ar" ? exp.title_ar : exp.title_en}
-                      </p>
-                      <p className="text-xs text-muted-foreground">
-                        {lang === "ar" ? exp.company_ar : exp.company_en}
-                      </p>
-                    </div>
+              <motion.div
+                className="mb-6"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: flipped ? 1 : 0, y: flipped ? 0 : 10 }}
+                transition={{ delay: 0.6, duration: 0.4 }}
+              >
+                <div className="mb-3 flex items-center gap-2.5">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10">
+                    <Briefcase size={16} className="text-primary" />
                   </div>
-                ))}
-              </div>
-
-              <div className="mb-8 h-px w-full bg-gradient-to-r from-transparent via-glass-border/40 to-transparent" />
+                  <h2 className="text-base font-bold text-foreground">{t("experience")}</h2>
+                </div>
+                <div className="space-y-3">
+                  {experience.map((exp: any, i: number) => (
+                    <div key={i} className="flex items-start gap-3 rounded-xl border border-border/50 bg-secondary/20 p-3">
+                      <div className="mt-1 h-2 w-2 shrink-0 rounded-full bg-primary shadow-sm shadow-primary/50" />
+                      <div>
+                        <p className="text-sm font-semibold text-foreground">
+                          {lang === "ar" ? exp.title_ar : exp.title_en}
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          {lang === "ar" ? exp.company_ar : exp.company_en}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </motion.div>
 
               {/* Education */}
-              <div>
-                <div className="mb-4 flex items-center gap-2">
-                  <GraduationCap size={20} className="text-primary" />
-                  <h2 className="text-lg font-bold text-foreground">{t("education")}</h2>
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: flipped ? 1 : 0, y: flipped ? 0 : 10 }}
+                transition={{ delay: 0.7, duration: 0.4 }}
+              >
+                <div className="mb-3 flex items-center gap-2.5">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10">
+                    <GraduationCap size={16} className="text-primary" />
+                  </div>
+                  <h2 className="text-base font-bold text-foreground">{t("education")}</h2>
                 </div>
-                {education.map((edu: any, i: number) => (
-                  <div key={i} className="flex items-start gap-3">
-                    <div className="mt-1.5 h-2.5 w-2.5 shrink-0 rounded-full bg-primary" />
-                    <div>
-                      <p className="text-sm font-semibold text-foreground">
-                        {lang === "ar" ? edu.degree_ar : edu.degree_en}
-                      </p>
-                      <p className="text-xs text-muted-foreground">
-                        {lang === "ar" ? edu.field_ar : edu.field_en}
-                      </p>
+                <div className="space-y-3">
+                  {education.map((edu: any, i: number) => (
+                    <div key={i} className="flex items-start gap-3 rounded-xl border border-border/50 bg-secondary/20 p-3">
+                      <div className="mt-1 h-2 w-2 shrink-0 rounded-full bg-primary shadow-sm shadow-primary/50" />
+                      <div>
+                        <p className="text-sm font-semibold text-foreground">
+                          {lang === "ar" ? edu.degree_ar : edu.degree_en}
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          {lang === "ar" ? edu.field_ar : edu.field_en}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </motion.div>
+            </div>
+          </div>
+        </motion.div>
+      </div>
+    </div>
+  );
+};
+
+export default BusinessCard;
                     </div>
                   </div>
                 ))}
