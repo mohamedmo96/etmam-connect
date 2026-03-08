@@ -1,117 +1,131 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Link } from "react-router-dom";
+import { motion, useMotionValue, useTransform, useSpring } from "framer-motion";
 import {
-  RotateCw,
-  Globe,
-  Linkedin,
-  MessageCircle,
-  Mail,
-  Phone,
-  MapPin,
-  UserPlus,
-  Share2,
-  Settings,
-  Sun,
-  Heart,
-  Award,
-  Briefcase,
-  GraduationCap,
+  RotateCw, Globe, Linkedin, MessageCircle, Mail, Phone, MapPin,
+  UserPlus, Share2, Settings, Heart, Award, Briefcase, GraduationCap,
+  Languages, Loader2,
 } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
-
-const skills = [
-  "Business Analysis",
-  "Requirements Gathering",
-  "Process Optimization",
-  "Stakeholder Management",
-  "Agile Methodology",
-  "Data Analysis",
-];
+import { useLanguage } from "@/contexts/LanguageContext";
+import { useCardData } from "@/hooks/useCardData";
 
 const BusinessCard = () => {
   const [flipped, setFlipped] = useState(false);
+  const { lang, setLang, t } = useLanguage();
+  const { data: cardData, isLoading } = useCardData();
+  const cardRef = useRef<HTMLDivElement>(null);
+
+  // 3D tilt effect
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+  const rotateX = useSpring(useTransform(y, [-150, 150], [8, -8]), { stiffness: 300, damping: 30 });
+  const rotateY = useSpring(useTransform(x, [-150, 150], [-8, 8]), { stiffness: 300, damping: 30 });
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!cardRef.current || flipped) return;
+    const rect = cardRef.current.getBoundingClientRect();
+    x.set(e.clientX - rect.left - rect.width / 2);
+    y.set(e.clientY - rect.top - rect.height / 2);
+  };
+
+  const handleMouseLeave = () => {
+    x.set(0);
+    y.set(0);
+  };
+
+  // Use DB data or fallback
+  const d = cardData || {} as any;
+  const name = lang === "ar" ? d.name_ar : d.name_en || "Mahmoud Abdelrahman";
+  const title = lang === "ar" ? d.title_ar : d.title_en || "Business Analyst";
+  const company = lang === "ar" ? d.company_ar : d.company_en || "Etmam for Information Technology";
+  const about = lang === "ar" ? d.about_ar : d.about_en || "";
+  const locationText = lang === "ar" ? d.location_ar : d.location_en || "";
+  const phone = d.phone || "+966 560 303 813";
+  const email = d.email || "mahmoud@etmam.com";
+  const websiteUrl = d.website_url || "https://etmam.com";
+  const linkedinUrl = d.linkedin_url || "https://linkedin.com";
+  const skills = Array.isArray(d.skills) ? d.skills : ["Business Analysis", "Requirements Gathering", "Process Optimization", "Stakeholder Management", "Agile Methodology", "Data Analysis"];
+  const experience = Array.isArray(d.experience) ? d.experience : [];
+  const education = Array.isArray(d.education) ? d.education : [];
 
   const handleSaveContact = () => {
-    const vcard = `BEGIN:VCARD
-VERSION:3.0
-FN:Mahmoud Abdelrahman
-TITLE:Business Analyst
-ORG:Etmam for Information Technology
-TEL:+966 560 303 813
-EMAIL:mahmoud@etmam.com
-ADR:;;السليمانية، الرياض 12242;Saudi Arabia
-URL:https://etmam.com
-END:VCARD`;
+    const vcard = `BEGIN:VCARD\nVERSION:3.0\nFN:${d.name_en || "Mahmoud Abdelrahman"}\nTITLE:${d.title_en || "Business Analyst"}\nORG:${d.company_en || "Etmam"}\nTEL:${phone}\nEMAIL:${email}\nURL:${websiteUrl}\nEND:VCARD`;
     const blob = new Blob([vcard], { type: "text/vcard" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = "Mahmoud_Abdelrahman.vcf";
+    a.download = `${(d.name_en || "contact").replace(/\s/g, "_")}.vcf`;
     a.click();
     URL.revokeObjectURL(url);
   };
 
   const handleShare = async () => {
     if (navigator.share) {
-      await navigator.share({
-        title: "Mahmoud Abdelrahman - Business Card",
-        text: "Connect with Mahmoud Abdelrahman, Business Analyst at Etmam",
-        url: window.location.href,
-      });
+      await navigator.share({ title: name, text: `${name} - ${title}`, url: window.location.href });
     }
   };
 
+  const initials = (d.name_en || "MA").split(" ").map((w: string) => w[0]).join("").slice(0, 2).toUpperCase();
+
+  if (isLoading) {
+    return (
+      <div className="relative z-10 flex min-h-screen items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
   return (
     <div className="relative z-10 flex min-h-screen items-center justify-center px-4 py-8">
-      {/* Settings icon - outside card, top-left */}
-      <Link
-        to="/login"
-        className="icon-btn fixed left-4 top-4 z-20"
-        aria-label="Settings"
-      >
+      {/* Top controls */}
+      <Link to="/login" className="icon-btn fixed left-4 top-4 z-20">
         <Settings size={20} className="text-muted-foreground" />
       </Link>
-
-      {/* Sun icon - outside card, top-right */}
-      <button
-        className="icon-btn fixed right-4 top-4 z-20"
-        aria-label="Theme"
-      >
-        <Sun size={20} className="text-muted-foreground" />
+      <button onClick={() => setLang(lang === "en" ? "ar" : "en")} className="icon-btn fixed right-4 top-4 z-20">
+        <Languages size={20} className="text-muted-foreground" />
       </button>
 
-      {/* Card flip container */}
+      {/* 3D Card container */}
       <div
+        ref={cardRef}
         className="w-full max-w-md"
         style={{ perspective: "1200px" }}
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
       >
-        <div
-          className="relative transition-transform duration-700"
+        <motion.div
+          className="relative"
           style={{
             transformStyle: "preserve-3d",
-            transform: flipped ? "rotateY(180deg)" : "rotateY(0deg)",
+            rotateX: flipped ? 0 : rotateX,
+            rotateY: flipped ? 180 : rotateY,
           }}
+          animate={{ rotateY: flipped ? 180 : 0 }}
+          transition={{ duration: 0.7, ease: "easeInOut" }}
         >
-          {/* ===== FRONT SIDE ===== */}
-          <div
+          {/* ===== FRONT ===== */}
+          <motion.div
             className="glass-card w-full overflow-hidden"
             style={{ backfaceVisibility: "hidden" }}
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
           >
-            {/* Flip button */}
             <div className="p-4">
-              <button
-                onClick={() => setFlipped(true)}
-                className="icon-btn"
-                aria-label="Flip card"
-              >
+              <button onClick={() => setFlipped(true)} className="icon-btn">
                 <RotateCw size={18} className="text-muted-foreground" />
               </button>
             </div>
 
-            {/* Body */}
             <div className="flex flex-col items-center px-8 pb-8">
               {/* Logo */}
-              <div className="mb-6 flex items-center gap-2">
+              <motion.div
+                className="mb-6 flex items-center gap-2"
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.2 }}
+              >
                 <span className="text-sm text-muted-foreground">إتمام</span>
                 <div className="flex items-center text-primary">
                   <span className="text-xl font-bold tracking-wide">Etmam</span>
@@ -121,200 +135,250 @@ END:VCARD`;
                     <div className="h-[2px] w-2 rounded bg-primary" />
                   </div>
                 </div>
-              </div>
+              </motion.div>
 
-              {/* Avatar */}
-              <div className="glow-border mb-6 h-28 w-28 overflow-hidden rounded-full">
-                <div className="flex h-full w-full items-center justify-center bg-secondary text-3xl font-bold text-primary">
-                  MA
-                </div>
-              </div>
+              {/* Avatar with glow animation */}
+              <motion.div
+                className="glow-border mb-6 h-28 w-28 overflow-hidden rounded-full"
+                initial={{ opacity: 0, scale: 0.5 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.3, type: "spring", stiffness: 200 }}
+                whileHover={{ scale: 1.05 }}
+              >
+                {d.avatar_url ? (
+                  <img src={d.avatar_url} alt={name} className="h-full w-full object-cover" />
+                ) : (
+                  <div className="flex h-full w-full items-center justify-center bg-secondary text-3xl font-bold text-primary">
+                    {initials}
+                  </div>
+                )}
+              </motion.div>
 
-              {/* Info */}
-              <h1 className="mb-1 text-2xl font-bold text-foreground">
-                Mahmoud Abdelrahman
-              </h1>
-              <p className="mb-1 text-base font-semibold text-primary">
-                Business Analyst
-              </p>
-              <p className="mb-6 text-sm text-muted-foreground">
-                Etmam for Information Technology
-              </p>
+              {/* Info with stagger */}
+              <motion.h1
+                className="mb-1 text-2xl font-bold text-foreground"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4 }}
+              >
+                {name}
+              </motion.h1>
+              <motion.p
+                className="mb-1 text-base font-semibold text-primary"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.45 }}
+              >
+                {title}
+              </motion.p>
+              <motion.p
+                className="mb-6 text-sm text-muted-foreground"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5 }}
+              >
+                {company}
+              </motion.p>
 
               {/* Social Icons */}
-              <div className="mb-8 flex gap-5">
+              <motion.div
+                className="mb-8 flex gap-5"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.55 }}
+              >
                 {[
-                  { icon: Globe, label: "Website", href: "https://etmam.com" },
-                  { icon: Linkedin, label: "LinkedIn", href: "https://linkedin.com" },
-                  { icon: MessageCircle, label: "Message", href: "#" },
-                  { icon: Mail, label: "Email", href: "mailto:mahmoud@etmam.com" },
-                ].map(({ icon: Icon, label, href }) => (
-                  <a
-                    key={label}
+                  { icon: Globe, href: websiteUrl },
+                  { icon: Linkedin, href: linkedinUrl },
+                  { icon: MessageCircle, href: d.whatsapp_url || "#" },
+                  { icon: Mail, href: `mailto:${email}` },
+                ].map(({ icon: Icon, href }, i) => (
+                  <motion.a
+                    key={i}
                     href={href}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="icon-btn !p-3"
-                    aria-label={label}
+                    whileHover={{ scale: 1.15, y: -3 }}
+                    whileTap={{ scale: 0.95 }}
                   >
                     <Icon size={22} className="text-foreground" />
-                  </a>
+                  </motion.a>
                 ))}
-              </div>
+              </motion.div>
 
               {/* Contact Details */}
               <div className="mb-8 w-full space-y-4">
-                <div className="flex items-center gap-4 rounded-xl border border-border bg-secondary/30 px-5 py-4">
+                <motion.div
+                  className="flex items-center gap-4 rounded-xl border border-border bg-secondary/30 px-5 py-4"
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.6 }}
+                  whileHover={{ x: 5, borderColor: "hsl(var(--primary) / 0.5)" }}
+                >
                   <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-glass-border/30 bg-secondary/50">
                     <Phone size={18} className="text-primary" />
                   </div>
                   <div>
-                    <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-                      Call
-                    </p>
-                    <p className="text-sm font-medium text-foreground">+966 560 303 813</p>
+                    <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">{t("call")}</p>
+                    <p className="text-sm font-medium text-foreground">{phone}</p>
                   </div>
-                </div>
-                <div className="flex items-center gap-4 rounded-xl border border-border bg-secondary/30 px-5 py-4">
+                </motion.div>
+                <motion.div
+                  className="flex items-center gap-4 rounded-xl border border-border bg-secondary/30 px-5 py-4"
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.65 }}
+                  whileHover={{ x: 5, borderColor: "hsl(var(--primary) / 0.5)" }}
+                >
                   <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-glass-border/30 bg-secondary/50">
                     <MapPin size={18} className="text-primary" />
                   </div>
                   <div>
-                    <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-                      Location
-                    </p>
-                    <p className="text-sm font-medium text-foreground">السليمانية، الرياض 12242</p>
+                    <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">{t("location")}</p>
+                    <p className="text-sm font-medium text-foreground">{locationText}</p>
                   </div>
-                </div>
+                </motion.div>
               </div>
 
               {/* QR Code */}
-              <div className="mb-8 flex w-full flex-col items-center p-4">
+              <motion.div
+                className="mb-8 flex w-full flex-col items-center p-4"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.7 }}
+              >
                 <p className="mb-4 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
-                  Scan to connect on LinkedIn
+                  {t("scan_linkedin")}
                 </p>
-                <div className="rounded-xl bg-background/30 p-3">
-                  <QRCodeSVG
-                    value="https://linkedin.com/in/mahmoud-abdelrahman"
-                    size={120}
-                    bgColor="transparent"
-                    fgColor="#3B82F6"
-                  />
-                </div>
-              </div>
+                <motion.div
+                  className="rounded-xl bg-background/30 p-3"
+                  whileHover={{ scale: 1.05 }}
+                >
+                  <QRCodeSVG value={linkedinUrl} size={120} bgColor="transparent" fgColor="#3B82F6" />
+                </motion.div>
+              </motion.div>
 
-              {/* Action Buttons */}
-              <div className="flex w-full items-center gap-3">
-                <button
+              {/* Actions */}
+              <motion.div
+                className="flex w-full items-center gap-3"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.75 }}
+              >
+                <motion.button
                   onClick={handleSaveContact}
-                  className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-primary py-3.5 text-sm font-semibold text-primary-foreground transition-all duration-200 hover:brightness-110"
+                  className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-primary py-3.5 text-sm font-semibold text-primary-foreground transition-all duration-200"
+                  whileHover={{ scale: 1.02, boxShadow: "0 0 30px hsl(var(--primary) / 0.4)" }}
+                  whileTap={{ scale: 0.98 }}
                 >
                   <UserPlus size={18} />
-                  Save Contact
-                </button>
-                <button
+                  {t("save_contact")}
+                </motion.button>
+                <motion.button
                   onClick={handleShare}
                   className="icon-btn !p-3"
-                  aria-label="Share"
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.95 }}
                 >
                   <Share2 size={20} className="text-muted-foreground" />
-                </button>
-              </div>
+                </motion.button>
+              </motion.div>
             </div>
-          </div>
+          </motion.div>
 
-          {/* ===== BACK SIDE ===== */}
+          {/* ===== BACK ===== */}
           <div
             className="glass-card absolute inset-0 w-full overflow-auto"
-            style={{
-              backfaceVisibility: "hidden",
-              transform: "rotateY(180deg)",
-            }}
+            style={{ backfaceVisibility: "hidden", transform: "rotateY(180deg)" }}
           >
-            {/* Flip button */}
             <div className="p-4">
-              <button
-                onClick={() => setFlipped(false)}
-                className="icon-btn"
-                aria-label="Flip back"
-              >
+              <button onClick={() => setFlipped(false)} className="icon-btn">
                 <RotateCw size={18} className="text-muted-foreground" />
               </button>
             </div>
 
             <div className="px-8 pb-8">
-              {/* About Me */}
-              <div className="mb-8">
+              {/* About */}
+              <motion.div className="mb-8" initial={{ opacity: 0 }} animate={{ opacity: flipped ? 1 : 0 }} transition={{ delay: 0.3 }}>
                 <div className="mb-3 flex items-center gap-2">
                   <Heart size={20} className="text-primary" />
-                  <h2 className="text-lg font-bold text-foreground">About Me</h2>
+                  <h2 className="text-lg font-bold text-foreground">{t("about_me")}</h2>
                 </div>
-                <p className="text-sm leading-relaxed text-muted-foreground">
-                  Passionate Business Analyst with expertise in bridging the gap
-                  between business needs and technology solutions. Dedicated to
-                  driving digital transformation and process optimization.
-                </p>
-              </div>
+                <p className="text-sm leading-relaxed text-muted-foreground">{about}</p>
+              </motion.div>
 
-              {/* Divider */}
               <div className="mb-8 h-px w-full bg-gradient-to-r from-transparent via-glass-border/40 to-transparent" />
 
               {/* Skills */}
               <div className="mb-8">
                 <div className="mb-4 flex items-center gap-2">
                   <Award size={20} className="text-primary" />
-                  <h2 className="text-lg font-bold text-foreground">Skills</h2>
+                  <h2 className="text-lg font-bold text-foreground">{t("skills")}</h2>
                 </div>
                 <div className="flex flex-wrap gap-2">
-                  {skills.map((skill) => (
-                    <span
-                      key={skill}
+                  {skills.map((skill: string, i: number) => (
+                    <motion.span
+                      key={i}
                       className="rounded-full border border-primary/40 px-4 py-1.5 text-xs font-medium text-primary"
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: flipped ? 1 : 0, scale: flipped ? 1 : 0.8 }}
+                      transition={{ delay: 0.4 + i * 0.05 }}
                     >
                       {skill}
-                    </span>
+                    </motion.span>
                   ))}
                 </div>
               </div>
 
-              {/* Divider */}
               <div className="mb-8 h-px w-full bg-gradient-to-r from-transparent via-glass-border/40 to-transparent" />
 
               {/* Experience */}
               <div className="mb-8">
                 <div className="mb-4 flex items-center gap-2">
                   <Briefcase size={20} className="text-primary" />
-                  <h2 className="text-lg font-bold text-foreground">Experience</h2>
+                  <h2 className="text-lg font-bold text-foreground">{t("experience")}</h2>
                 </div>
-                <div className="flex items-start gap-3">
-                  <div className="mt-1.5 h-2.5 w-2.5 shrink-0 rounded-full bg-primary" />
-                  <div>
-                    <p className="text-sm font-semibold text-foreground">Business Analyst</p>
-                    <p className="text-xs text-muted-foreground">Etmam for Information Technology</p>
+                {experience.map((exp: any, i: number) => (
+                  <div key={i} className="flex items-start gap-3">
+                    <div className="mt-1.5 h-2.5 w-2.5 shrink-0 rounded-full bg-primary" />
+                    <div>
+                      <p className="text-sm font-semibold text-foreground">
+                        {lang === "ar" ? exp.title_ar : exp.title_en}
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        {lang === "ar" ? exp.company_ar : exp.company_en}
+                      </p>
+                    </div>
                   </div>
-                </div>
+                ))}
               </div>
 
-              {/* Divider */}
               <div className="mb-8 h-px w-full bg-gradient-to-r from-transparent via-glass-border/40 to-transparent" />
 
               {/* Education */}
               <div>
                 <div className="mb-4 flex items-center gap-2">
                   <GraduationCap size={20} className="text-primary" />
-                  <h2 className="text-lg font-bold text-foreground">Education</h2>
+                  <h2 className="text-lg font-bold text-foreground">{t("education")}</h2>
                 </div>
-                <div className="flex items-start gap-3">
-                  <div className="mt-1.5 h-2.5 w-2.5 shrink-0 rounded-full bg-primary" />
-                  <div>
-                    <p className="text-sm font-semibold text-foreground">Bachelor's Degree</p>
-                    <p className="text-xs text-muted-foreground">Business Information Systems</p>
+                {education.map((edu: any, i: number) => (
+                  <div key={i} className="flex items-start gap-3">
+                    <div className="mt-1.5 h-2.5 w-2.5 shrink-0 rounded-full bg-primary" />
+                    <div>
+                      <p className="text-sm font-semibold text-foreground">
+                        {lang === "ar" ? edu.degree_ar : edu.degree_en}
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        {lang === "ar" ? edu.field_ar : edu.field_en}
+                      </p>
+                    </div>
                   </div>
-                </div>
+                ))}
               </div>
             </div>
           </div>
-        </div>
+        </motion.div>
       </div>
     </div>
   );
