@@ -34,7 +34,7 @@
 
     --radius: 0.75rem;
 
-    /* Custom glassmorphism tokens */
+    /* Glassmorphism tokens */
     --glass-bg: 217 40% 14%;
     --glass-border: 217 60% 40%;
     --glass-glow: 217 91% 60%;
@@ -85,8 +85,16 @@
   }
 
   .glow-border {
-    box-shadow: 0 0 15px hsl(var(--glass-glow) / 0.4);
+    box-shadow:
+      0 0 15px hsl(var(--glass-glow) / 0.4),
+      0 0 40px hsl(var(--glass-glow) / 0.15);
     border: 2px solid hsl(var(--glass-glow) / 0.5);
+    animation: pulse-glow 3s ease-in-out infinite;
+  }
+
+  @keyframes pulse-glow {
+    0%, 100% { box-shadow: 0 0 15px hsl(var(--glass-glow) / 0.4), 0 0 40px hsl(var(--glass-glow) / 0.15); }
+    50% { box-shadow: 0 0 25px hsl(var(--glass-glow) / 0.6), 0 0 60px hsl(var(--glass-glow) / 0.25); }
   }
 
   .icon-btn {
@@ -98,5 +106,6 @@
   .icon-btn:hover {
     background: hsl(var(--glass-bg) / 0.8);
     border-color: hsl(var(--glass-border) / 0.4);
+    transform: translateY(-1px);
   }
 }
