@@ -258,12 +258,12 @@ const BusinessCard = () => {
               </div>
 
               {/* Contact Details */}
-              <div className="mb-7 w-full space-y-3" dir="ltr">
+              <div className="mb-7 w-full space-y-3">
                 <motion.a
                   href={`tel:${phoneNum}`}
-                  className="contact-row !flex-row"
-                  initial={{ opacity: 0, x: -15 }}
-                  animate={{ opacity: 1, x: 0 }}
+                  className="contact-row"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
                   transition={{ delay: 0.55 }}
                 >
                   <div className="section-icon shrink-0 !h-11 !w-11 !rounded-full">
@@ -271,16 +271,13 @@ const BusinessCard = () => {
                   </div>
                   <div className="min-w-0 flex-1">
                     <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-muted-foreground">{t("call")}</p>
-                    <p className="text-[15px] font-semibold text-foreground">{phoneNum}</p>
-                  </div>
-                  <div className="h-5 w-5 flex items-center justify-center rounded-full bg-primary/15">
-                    <Phone size={10} className="text-primary" />
+                    <p className="text-[15px] font-semibold text-foreground" dir="ltr" className2="">{phoneNum}</p>
                   </div>
                 </motion.a>
                 <motion.div
-                  className="contact-row !flex-row"
-                  initial={{ opacity: 0, x: -15 }}
-                  animate={{ opacity: 1, x: 0 }}
+                  className="contact-row"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
                   transition={{ delay: 0.6 }}
                 >
                   <div className="section-icon shrink-0 !h-11 !w-11 !rounded-full">
@@ -289,9 +286,6 @@ const BusinessCard = () => {
                   <div className="min-w-0 flex-1">
                     <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-muted-foreground">{t("location")}</p>
                     <p className="text-[15px] font-semibold text-foreground">{locationText}</p>
-                  </div>
-                  <div className="h-5 w-5 flex items-center justify-center rounded-full bg-primary/15">
-                    <MapPin size={10} className="text-primary" />
                   </div>
                 </motion.div>
               </div>
