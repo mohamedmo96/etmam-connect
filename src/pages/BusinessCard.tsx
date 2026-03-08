@@ -269,9 +269,9 @@ const BusinessCard = () => {
                   <div className="section-icon shrink-0 !h-11 !w-11 !rounded-full">
                     <Phone size={17} className="text-primary" />
                   </div>
-                  <div className="min-w-0 flex-1">
+                  <div className="min-w-0 flex-1 text-start">
                     <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-muted-foreground">{t("call")}</p>
-                    <p className="text-[15px] font-semibold text-foreground" dir="ltr">{phoneNum}</p>
+                    <p className="text-[15px] font-semibold text-foreground">{phoneNum}</p>
                   </div>
                 </motion.a>
                 <motion.div
