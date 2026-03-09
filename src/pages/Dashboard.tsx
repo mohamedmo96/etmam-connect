@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   LogOut, Save, Eye, User, Phone, Globe, Award, Briefcase, GraduationCap,
-  Plus, X, Loader2, Check, Languages, Camera, Upload,
+  Plus, X, Loader2, Check, Languages, Camera, Upload, Clock,
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
