@@ -8,6 +8,8 @@ import { LanguageProvider } from "@/contexts/LanguageContext";
 import Index from "./pages/Index";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
+import AdminPanel from "./pages/AdminPanel";
+import ClientCard from "./pages/ClientCard";
 import NotFound from "./pages/NotFound";
 import ParticleBackground from "./components/ParticleBackground";
 
@@ -26,6 +28,8 @@ const App = () => (
               <Route path="/" element={<Index />} />
               <Route path="/login" element={<Login />} />
               <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/admin" element={<AdminPanel />} />
+              <Route path="/card/:userId" element={<ClientCard />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>

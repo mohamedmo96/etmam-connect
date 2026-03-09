@@ -3,11 +3,12 @@ import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   LogOut, Save, Eye, User, Phone, Globe, Award, Briefcase, GraduationCap,
-  Plus, X, Loader2, Check, Languages, Camera, Upload,
+  Plus, X, Loader2, Check, Languages, Camera, Upload, Clock,
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useCardData, useUpdateCardData } from "@/hooks/useCardData";
+import { useClientStatus, useIsAdmin } from "@/hooks/useAdmin";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
@@ -189,9 +190,31 @@ const Dashboard = () => {
     }
   }, [cardData]);
 
+  // Check client expiration
+  const { data: clientStatus } = useClientStatus();
+  const isClientExpired = clientStatus && (!clientStatus.is_active || new Date(clientStatus.expires_at) < new Date());
+  const { data: isAdminUser } = useIsAdmin();
+
   if (!user) {
     navigate("/login");
     return null;
+  }
+
+  if (isClientExpired && !isAdminUser) {
+    return (
+      <div className="flex min-h-screen flex-col items-center justify-center gap-4 px-4 relative z-10">
+        <Clock className="h-16 w-16 text-destructive" />
+        <h1 className="text-2xl font-bold text-foreground">
+          {lang === "ar" ? "انتهت صلاحية حسابك" : "Your subscription has expired"}
+        </h1>
+        <p className="text-muted-foreground text-center">
+          {lang === "ar" ? "يرجى التواصل مع المسؤول لتجديد الاشتراك" : "Please contact your administrator to renew your subscription"}
+        </p>
+        <button onClick={async () => { await signOut(); navigate("/login"); }} className="mt-4 rounded-xl bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground">
+          {lang === "ar" ? "تسجيل الخروج" : "Sign Out"}
+        </button>
+      </div>
+    );
   }
 
   if (isLoading) {

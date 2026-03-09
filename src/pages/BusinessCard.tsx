@@ -11,10 +11,11 @@ import { QRCodeSVG } from "qrcode.react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useCardData } from "@/hooks/useCardData";
 
-const BusinessCard = () => {
+const BusinessCard = ({ overrideData }: { overrideData?: any } = {}) => {
   const [flipped, setFlipped] = useState(false);
   const { lang, setLang, t } = useLanguage();
-  const { data: cardData, isLoading } = useCardData();
+  const { data: fetchedData, isLoading } = useCardData();
+  const cardData = overrideData || fetchedData;
   const cardRef = useRef<HTMLDivElement>(null);
 
   const x = useMotionValue(0);
