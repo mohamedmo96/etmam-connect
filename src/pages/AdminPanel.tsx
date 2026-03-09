@@ -108,9 +108,9 @@ const AdminPanel = () => {
   const isExpired = (expiresAt: string) => new Date(expiresAt) < new Date();
 
   const getStatus = (client: any) => {
-    if (!client.is_active) return { label: lang === "ar" ? "معطّل" : "Disabled", color: "text-muted-foreground" };
+                    if (!client.is_active) return { label: lang === "ar" ? "معطّل" : "Disabled", color: "text-muted-foreground" };
     if (isExpired(client.expires_at)) return { label: lang === "ar" ? "منتهي" : "Expired", color: "text-destructive" };
-    return { label: lang === "ar" ? "نشط" : "Active", color: "text-green-500" };
+    return { label: lang === "ar" ? "نشط" : "Active", color: "text-primary" };
   };
 
   const formatDate = (d: string) => new Date(d).toLocaleDateString(lang === "ar" ? "ar-SA" : "en-US", {
