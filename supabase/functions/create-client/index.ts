@@ -100,6 +100,17 @@ Deno.serve(async (req) => {
       });
     }
 
+    // Update card_data with the client's name
+    const nameParts = client_name.trim().split(/\s+/);
+    await adminClient
+      .from("card_data")
+      .update({
+        name_en: client_name,
+        name_ar: client_name,
+        email: email,
+      })
+      .eq("user_id", newUser.user.id);
+
     return new Response(JSON.stringify({ client: clientData, user_id: newUser.user.id }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
