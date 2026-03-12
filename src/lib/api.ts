@@ -2,7 +2,7 @@
 import axios from "axios";
 
 export const api = axios.create({
-  baseURL: "http://bahaswager.runasp.net/api",
+  baseURL: "https://bahaswager.runasp.net/api",
 });
 
 api.interceptors.request.use((config) => {

@@ -46,7 +46,7 @@ const qrValue = d.qr_code_value || publicProfileUrl || linkedinUrl || window.loc
   const skills = Array.isArray(d.skills) ? d.skills : ["Business Analysis", "Requirements Gathering", "Process Optimization", "Stakeholder Management", "Agile Methodology", "Data Analysis"];
   const experience = Array.isArray(d.experience) ? d.experience : [{ title_en: "Business Analyst", title_ar: "محلل أعمال", company_en: "Etmam for Information Technology", company_ar: "إتمام لتقنية المعلومات" }];
   const education = Array.isArray(d.education) ? d.education : [{ degree_en: "Bachelor's Degree", degree_ar: "بكالوريوس", field_en: "Business Information Systems", field_ar: "نظم معلومات إدارية" }];
-const defaultAvatarUrl = "http://bahaswager.runasp.net/e69cbbf7-9815-4a2d-a5e9-f0c74a61ec37.png";
+const defaultAvatarUrl = "https://bahaswager.runasp.net/e69cbbf7-9815-4a2d-a5e9-f0c74a61ec37.png";
 const avatarSrc = d.avatar_url || defaultAvatarUrl;
   const handleSaveContact = () => {
     const vcard = `BEGIN:VCARD\nVERSION:3.0\nFN:${d.name_en || "Mahmoud Abdelrahman"}\nTITLE:${d.title_en || "Business Analyst"}\nORG:${d.company_en || "Etmam"}\nTEL:${phoneNum}\nEMAIL:${emailAddr}\nURL:${websiteUrl}\nEND:VCARD`;
