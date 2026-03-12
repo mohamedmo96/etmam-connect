@@ -20,19 +20,25 @@ const Login = () => {
     setLoading(true);
 
     try {
-      const { error } = await signIn(email, password);
+   const { error, role } = await signIn(email, password);
 
-      if (error) {
-        toast.error(error);
-        return;
-      }
+if (error) {
+  toast.error(error);
+  return;
+}
 
-      navigate("/dashboard");
+if (role?.toLowerCase() === "superadmin") {
+  navigate("/admin");
+  return;
+}
+
+navigate("/dashboard");
     } finally {
       setLoading(false);
     }
   };
 
+  
   return (
     <div className="relative z-10 flex min-h-screen items-center justify-center px-4 py-8">
       <Link

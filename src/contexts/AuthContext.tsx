@@ -44,41 +44,41 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setLoading(false);
   }, []);
 
-  const signIn = async (email: string, password: string) => {
-    try {
-      const response = await api.post("/Auth/login", { email, password });
-      const result = response.data;
+const signIn = async (email: string, password: string) => {
+  try {
+    const response = await api.post("/Auth/login", { email, password });
+    const result = response.data;
 
-      if (!result?.succeeded) {
-        return { error: result?.message || "Login failed" };
-      }
-
-      const authData = result.data;
-
-      const mappedUser: AuthUser = {
-        id: authData.userId,
-        userId: authData.userId,
-        userName: authData.userName ?? "",
-        email: authData.email ?? email,
-        role: authData.role ?? "",
-      };
-
-      localStorage.setItem("token", authData.token);
-      localStorage.setItem("user", JSON.stringify(mappedUser));
-
-      setToken(authData.token);
-      setUser(mappedUser);
-
-      return { error: null };
-    } catch (error: any) {
-      return {
-        error:
-          error?.response?.data?.message ||
-          error?.message ||
-          "Login failed",
-      };
+    if (!result?.succeeded) {
+      return { error: result?.message || "Login failed", role: null };
     }
-  };
+
+    const authData = result.data;
+
+    const mappedUser = {
+      id: authData.userId,
+      userId: authData.userId,
+      userName: authData.userName ?? "",
+      email: authData.email ?? email,
+      role: authData.role ?? "",
+    };
+
+    localStorage.setItem("token", authData.token);
+    localStorage.setItem("user", JSON.stringify(mappedUser));
+
+    setToken(authData.token);
+    setUser(mappedUser);
+
+    return { error: null, role: mappedUser.role };
+  } catch (error: any) {
+    return {
+      error: error?.response?.data?.message || error?.message || "Login failed",
+      role: null,
+    };
+  }
+};
+
+
 
   const signOut = async () => {
     localStorage.removeItem("token");

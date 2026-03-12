@@ -9,7 +9,9 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useCardData, useUpdateCardData } from "@/hooks/useCardData";
 import { toast } from "sonner";
-
+import { api } from "@/lib/api";
+import Cropper from "react-easy-crop";
+import { getCroppedImg } from "@/lib/cropImage";
 const Dashboard = () => {
   const { user, signOut } = useAuth();
   const { lang, setLang, t } = useLanguage();
@@ -23,8 +25,16 @@ const Dashboard = () => {
   const [activeTab, setActiveTab] = useState("basic");
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const backgroundFileInputRef = useRef<HTMLInputElement>(null);
+const [cropTarget, setCropTarget] = useState<"avatar" | "background">("avatar");
+const [cropAspect, setCropAspect] = useState(1);
+const [cropShape, setCropShape] = useState<"round" | "rect">("round");
   const skillInputRef = useRef<HTMLInputElement>(null);
-
+const [cropModalOpen, setCropModalOpen] = useState(false);
+const [imageToCrop, setImageToCrop] = useState<string | null>(null);
+const [crop, setCrop] = useState({ x: 0, y: 0 });
+const [zoom, setZoom] = useState(1);
+const [croppedAreaPixels, setCroppedAreaPixels] = useState<any>(null);
   const allSkills = [
     // Business & Management
     "Business Analysis", "Requirements Gathering", "Process Optimization",
@@ -163,7 +173,9 @@ const Dashboard = () => {
     "Chinese", "Japanese", "Korean", "Hindi", "Portuguese",
     "Translation", "Interpretation", "Localization",
   ];
-
+const onCropComplete = (_: any, croppedAreaPixelsValue: any) => {
+  setCroppedAreaPixels(croppedAreaPixelsValue);
+};
   const currentSkills = Array.isArray(form.skills) ? form.skills : [];
 
   const filteredSuggestions = useMemo(() => {
@@ -257,16 +269,139 @@ const handleSave = async () => {
     handleChange("skills", skills);
   };
 
-const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+const handleImageSelect = async (
+  e: React.ChangeEvent<HTMLInputElement>,
+  type: "avatar" | "background"
+) => {
   const file = e.target.files?.[0];
   if (!file) return;
 
-  toast.error(
-    lang === "ar"
-      ? "رفع الصور لم يتم ربطه بالـ API بعد"
-      : "Image upload is not connected to the API yet"
-  );
+  const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
+  if (!allowedTypes.includes(file.type)) {
+    toast.error(
+      lang === "ar"
+        ? "يرجى اختيار صورة بصيغة JPG أو PNG أو WEBP"
+        : "Please choose JPG, PNG, or WEBP image"
+    );
+    return;
+  }
+
+  const reader = new FileReader();
+  reader.onload = () => {
+    setImageToCrop(reader.result as string);
+    setCrop({ x: 0, y: 0 });
+    setZoom(1);
+
+    setCropTarget(type);
+
+    if (type === "avatar") {
+      setCropAspect(1);
+      setCropShape("round");
+    } else {
+      setCropAspect(16 / 9);
+      setCropShape("rect");
+    }
+
+    setCropModalOpen(true);
+  };
+
+  reader.readAsDataURL(file);
 };
+
+
+const dataURLToFile = (dataUrl: string, fileName: string) => {
+  const arr = dataUrl.split(",");
+  const mimeMatch = arr[0].match(/:(.*?);/);
+  const mime = mimeMatch ? mimeMatch[1] : "image/png";
+  const bstr = atob(arr[1]);
+  let n = bstr.length;
+  const u8arr = new Uint8Array(n);
+
+  while (n--) {
+    u8arr[n] = bstr.charCodeAt(n);
+  }
+
+  return new File([u8arr], fileName, { type: mime });
+};
+
+const handleCropSave = async () => {
+  try {
+    if (!imageToCrop || !croppedAreaPixels) return;
+
+    const croppedImage = await getCroppedImg(imageToCrop, croppedAreaPixels);
+
+    if (cropTarget === "background") {
+      handleChange("background_url", croppedImage);
+      setCropModalOpen(false);
+      setImageToCrop(null);
+      toast.success(
+        lang === "ar"
+          ? "تم تجهيز صورة الخلفية"
+          : "Background image prepared"
+      );
+      return;
+    }
+
+    setUploading(true);
+
+    // 1) حول الصورة المقصوصة إلى File
+    const file = dataURLToFile(croppedImage, `avatar-${Date.now()}.png`);
+
+    // 2) ارفعها على API
+    const formData = new FormData();
+    formData.append("file", file);
+
+    const uploadResponse = await api.post("/ImageUploader/Upload", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+
+    // 3) استخرج اللينك من الريسبونس
+    // عدل السطر ده حسب شكل الريسبونس الفعلي لو مختلف
+ const uploadedUrl =
+  uploadResponse?.data?.data?.imageUrl ||
+  uploadResponse?.data?.imageUrl ||
+  uploadResponse?.data?.url ||
+  uploadResponse?.data?.fileUrl;
+
+if (!uploadedUrl || typeof uploadedUrl !== "string") {
+  throw new Error("Image upload response did not return a valid URL");
+}
+
+const finalImageUrl = uploadedUrl.replace("http://", "https://");
+
+    // 4) حدث الفورم محليًا
+  const updatedForm = {
+  ...form,
+  avatar_url: finalImageUrl,
+};
+
+    setForm(updatedForm);
+
+    // 5) احفظ تلقائيًا في البروفايل بدون زر Save
+    await updateCard.mutateAsync(updatedForm as any);
+
+    setCropModalOpen(false);
+    setImageToCrop(null);
+
+    toast.success(
+      lang === "ar"
+        ? "تم رفع الصورة الشخصية وحفظها تلقائيًا"
+        : "Profile photo uploaded and saved automatically"
+    );
+  } catch (error: any) {
+    toast.error(
+      error?.message ||
+        (lang === "ar"
+          ? "فشل رفع الصورة الشخصية"
+          : "Failed to upload profile image")
+    );
+  } finally {
+    setUploading(false);
+  }
+};
+
   const tabs = [
     { id: "basic", label: t("basic_info"), icon: User },
     { id: "contact", label: t("contact_info"), icon: Phone },
@@ -296,9 +431,16 @@ const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
           >
             <Languages size={18} className="text-muted-foreground" />
           </button>
-          <button onClick={() => navigate("/")} className="icon-btn !p-2.5">
-            <Eye size={18} className="text-muted-foreground" />
-          </button>
+              <button
+        onClick={() => {
+          const targetUserId = user?.userId || user?.id;
+          if (!targetUserId) return;
+          navigate(`/card/${targetUserId}`);
+        }}
+        className="icon-btn !p-2.5"
+      >
+        <Eye size={18} className="text-muted-foreground" />
+      </button>
           <button
             onClick={async () => { await signOut(); navigate("/login"); }}
             className="icon-btn !p-2.5"
@@ -342,85 +484,182 @@ const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
             exit={{ opacity: 0, x: -20 }}
             transition={{ duration: 0.2 }}
           >
-            {activeTab === "basic" && (
-              <div className="grid gap-5 md:grid-cols-2">
-                {/* Avatar Upload */}
-                <div className="md:col-span-2 flex flex-col items-center gap-3 mb-2">
-                  <label className={labelClass}>{lang === "ar" ? "الصورة الشخصية" : "Profile Photo"}</label>
-                  <div className="relative group">
-                    <div className="h-24 w-24 rounded-full overflow-hidden border-2 border-border bg-secondary/30">
-                      {form.avatar_url ? (
-                        <img src={form.avatar_url} alt="Avatar" className="h-full w-full object-cover" />
-                      ) : (
-                        <div className="flex h-full w-full items-center justify-center">
-                          <User size={32} className="text-muted-foreground" />
-                        </div>
-                      )}
-                    </div>
-                    <button
-                      onClick={() => fileInputRef.current?.click()}
-                      disabled={uploading}
-                      className="absolute inset-0 flex items-center justify-center rounded-full bg-background/60 opacity-0 transition-opacity group-hover:opacity-100"
-                    >
-                      {uploading ? (
-                        <Loader2 size={20} className="animate-spin text-primary" />
-                      ) : (
-                        <Camera size={20} className="text-primary" />
-                      )}
-                    </button>
-                    <input
-                      ref={fileInputRef}
-                      type="file"
-                      accept="image/jpeg,image/png,image/webp"
-                      onChange={handleAvatarUpload}
-                      className="hidden"
-                    />
-                  </div>
-                  <button
-                    onClick={() => fileInputRef.current?.click()}
-                    disabled={uploading}
-                    className="flex items-center gap-1.5 text-xs font-medium text-primary hover:underline"
-                  >
-                    <Upload size={12} />
-                    {uploading
-                      ? (lang === "ar" ? "جاري الرفع..." : "Uploading...")
-                      : (lang === "ar" ? "رفع صورة" : "Upload Photo")}
-                  </button>
-                </div>
-                <div>
-                  <label className={labelClass}>{t("name")} ({t("english")})</label>
-                  <input className={inputClass} value={form.name_en || ""} onChange={(e) => handleChange("name_en", e.target.value)} />
-                </div>
-                <div>
-                  <label className={labelClass}>{t("name")} ({t("arabic")})</label>
-                  <input className={inputClass} dir="rtl" value={form.name_ar || ""} onChange={(e) => handleChange("name_ar", e.target.value)} />
-                </div>
-                <div>
-                  <label className={labelClass}>{t("title")} ({t("english")})</label>
-                  <input className={inputClass} value={form.title_en || ""} onChange={(e) => handleChange("title_en", e.target.value)} />
-                </div>
-                <div>
-                  <label className={labelClass}>{t("title")} ({t("arabic")})</label>
-                  <input className={inputClass} dir="rtl" value={form.title_ar || ""} onChange={(e) => handleChange("title_ar", e.target.value)} />
-                </div>
-                <div>
-                  <label className={labelClass}>{t("company")} ({t("english")})</label>
-                  <input className={inputClass} value={form.company_en || ""} onChange={(e) => handleChange("company_en", e.target.value)} />
-                </div>
-                <div>
-                  <label className={labelClass}>{t("company")} ({t("arabic")})</label>
-                  <input className={inputClass} dir="rtl" value={form.company_ar || ""} onChange={(e) => handleChange("company_ar", e.target.value)} />
-                </div>
-                <div className="md:col-span-2">
-                  <label className={labelClass}>{t("about")} ({t("english")})</label>
-                  <textarea className={inputClass + " min-h-[80px]"} value={form.about_en || ""} onChange={(e) => handleChange("about_en", e.target.value)} />
-                </div>
-                <div className="md:col-span-2">
-                  <label className={labelClass}>{t("about")} ({t("arabic")})</label>
-                  <textarea className={inputClass + " min-h-[80px]"} dir="rtl" value={form.about_ar || ""} onChange={(e) => handleChange("about_ar", e.target.value)} />
-                </div>
+          {activeTab === "basic" && (
+  <div className="grid gap-5 md:grid-cols-2">
+
+<div className="md:col-span-2 mb-6">
+  <label className={labelClass}>
+    {lang === "ar" ? "الصورة الشخصية والخلفية" : "Profile Photo & Background"}
+  </label>
+
+  <div className="relative overflow-hidden rounded-3xl border border-border bg-secondary/20">
+    {/* Background */}
+    <div className="relative h-44 w-full overflow-hidden bg-secondary/30">
+      {form.background_url ? (
+        <img
+          src={form.background_url}
+          alt="Background"
+          className="h-full w-full object-cover"
+        />
+      ) : (
+        <div className="flex h-full w-full items-center justify-center text-sm text-muted-foreground">
+          {lang === "ar" ? "لا توجد صورة خلفية" : "No background image"}
+        </div>
+      )}
+
+      <div className="absolute inset-0 bg-black/20" />
+
+      <button
+        type="button"
+        onClick={() => backgroundFileInputRef.current?.click()}
+        className="absolute right-3 top-3 flex items-center gap-1 rounded-xl bg-background/80 px-3 py-2 text-xs font-medium text-foreground shadow transition hover:bg-background"
+      >
+        <Camera size={14} />
+        {lang === "ar" ? "تغيير الخلفية" : "Change Background"}
+      </button>
+
+      <input
+        ref={backgroundFileInputRef}
+        type="file"
+        accept="image/jpeg,image/png,image/webp"
+        onChange={(e) => handleImageSelect(e, "background")}
+        className="hidden"
+      />
+    </div>
+
+    {/* Avatar */}
+    <div className="relative px-6 pb-5">
+      <div className="-mt-12 flex flex-col items-center">
+        <div className="relative group">
+          <div className="h-24 w-24 overflow-hidden rounded-full border-4 border-background bg-secondary shadow-lg">
+            {form.avatar_url ? (
+              <img
+                src={form.avatar_url}
+                alt="Avatar"
+                className="h-full w-full object-cover"
+              />
+            ) : (
+              <div className="flex h-full w-full items-center justify-center">
+                <User size={32} className="text-muted-foreground" />
               </div>
             )}
+          </div>
+
+          <button
+            type="button"
+            onClick={() => fileInputRef.current?.click()}
+            disabled={uploading}
+            className="absolute inset-0 flex items-center justify-center rounded-full bg-background/60 opacity-0 transition-opacity group-hover:opacity-100"
+          >
+            {uploading ? (
+              <Loader2 size={20} className="animate-spin text-primary" />
+            ) : (
+              <Camera size={20} className="text-primary" />
+            )}
+          </button>
+
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/jpeg,image/png,image/webp"
+            onChange={(e) => handleImageSelect(e, "avatar")}
+            className="hidden"
+          />
+        </div>
+
+        <button
+          type="button"
+          onClick={() => fileInputRef.current?.click()}
+          disabled={uploading}
+          className="mt-3 flex items-center gap-1.5 text-xs font-medium text-primary hover:underline"
+        >
+          <Upload size={12} />
+          {uploading
+            ? (lang === "ar" ? "جاري الرفع..." : "Uploading...")
+            : (lang === "ar" ? "تغيير الصورة الشخصية" : "Change Profile Photo")}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+    <div>
+      <label className={labelClass}>{t("name")} ({t("english")})</label>
+      <input
+        className={inputClass}
+        value={form.name_en || ""}
+        onChange={(e) => handleChange("name_en", e.target.value)}
+      />
+    </div>
+
+    <div>
+      <label className={labelClass}>{t("name")} ({t("arabic")})</label>
+      <input
+        className={inputClass}
+        dir="rtl"
+        value={form.name_ar || ""}
+        onChange={(e) => handleChange("name_ar", e.target.value)}
+      />
+    </div>
+
+    <div>
+      <label className={labelClass}>{t("title")} ({t("english")})</label>
+      <input
+        className={inputClass}
+        value={form.title_en || ""}
+        onChange={(e) => handleChange("title_en", e.target.value)}
+      />
+    </div>
+
+    <div>
+      <label className={labelClass}>{t("title")} ({t("arabic")})</label>
+      <input
+        className={inputClass}
+        dir="rtl"
+        value={form.title_ar || ""}
+        onChange={(e) => handleChange("title_ar", e.target.value)}
+      />
+    </div>
+
+    <div>
+      <label className={labelClass}>{t("company")} ({t("english")})</label>
+      <input
+        className={inputClass}
+        value={form.company_en || ""}
+        onChange={(e) => handleChange("company_en", e.target.value)}
+      />
+    </div>
+
+    <div>
+      <label className={labelClass}>{t("company")} ({t("arabic")})</label>
+      <input
+        className={inputClass}
+        dir="rtl"
+        value={form.company_ar || ""}
+        onChange={(e) => handleChange("company_ar", e.target.value)}
+      />
+    </div>
+
+    <div className="md:col-span-2">
+      <label className={labelClass}>{t("about")} ({t("english")})</label>
+      <textarea
+        className={inputClass + " min-h-[80px]"}
+        value={form.about_en || ""}
+        onChange={(e) => handleChange("about_en", e.target.value)}
+      />
+    </div>
+
+    <div className="md:col-span-2">
+      <label className={labelClass}>{t("about")} ({t("arabic")})</label>
+      <textarea
+        className={inputClass + " min-h-[80px]"}
+        dir="rtl"
+        value={form.about_ar || ""}
+        onChange={(e) => handleChange("about_ar", e.target.value)}
+      />
+    </div>
+  </div>
+)}
 
             {activeTab === "contact" && (
               <div className="grid gap-5 md:grid-cols-2">
@@ -630,6 +869,88 @@ const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
           </button>
         </motion.div>
       </motion.div>
+
+<AnimatePresence>
+  {cropModalOpen && imageToCrop && (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-4"
+    >
+      <motion.div
+        initial={{ scale: 0.96, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        exit={{ scale: 0.96, opacity: 0 }}
+        className="w-full max-w-xl rounded-2xl border border-border bg-card p-4 shadow-2xl"
+      >
+        <div className="mb-4 flex items-center justify-between">
+          <h2 className="text-lg font-bold text-foreground">
+            {lang === "ar" ? "تعديل الصورة" : "Edit Image"}
+          </h2>
+          <button
+            onClick={() => {
+              setCropModalOpen(false);
+              setImageToCrop(null);
+            }}
+            className="icon-btn !p-2"
+          >
+            <X size={16} className="text-muted-foreground" />
+          </button>
+        </div>
+
+        <div className="relative h-[350px] w-full overflow-hidden rounded-xl bg-black">
+          <Cropper
+            image={imageToCrop}
+            crop={crop}
+            zoom={zoom}
+          aspect={cropAspect}
+           cropShape={cropShape}
+            showGrid={false}
+            onCropChange={setCrop}
+            onZoomChange={setZoom}
+            onCropComplete={onCropComplete}
+          />
+        </div>
+
+        <div className="mt-4">
+          <label className="mb-2 block text-sm font-medium text-foreground">
+            {lang === "ar" ? "التكبير" : "Zoom"}
+          </label>
+          <input
+            type="range"
+            min={1}
+            max={3}
+            step={0.1}
+            value={zoom}
+            onChange={(e) => setZoom(Number(e.target.value))}
+            className="w-full"
+          />
+        </div>
+
+        <div className="mt-5 flex justify-end gap-2">
+          <button
+            onClick={() => {
+              setCropModalOpen(false);
+              setImageToCrop(null);
+            }}
+            className="rounded-xl border border-border px-4 py-2 text-sm font-medium text-foreground"
+          >
+            {lang === "ar" ? "إلغاء" : "Cancel"}
+          </button>
+
+          <button
+            onClick={handleCropSave}
+            className="rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground"
+          >
+            {lang === "ar" ? "حفظ الصورة" : "Save Image"}
+          </button>
+        </div>
+      </motion.div>
+    </motion.div>
+  )}
+</AnimatePresence>
+
     </div>
   );
 };

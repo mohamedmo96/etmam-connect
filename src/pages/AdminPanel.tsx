@@ -7,15 +7,15 @@ import {
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { useIsAdmin, useClients, useCreateClient, useDeleteClient, useToggleClient, useUpdateClientExpiry } from "@/hooks/useAdmin";
-import { toast } from "sonner";
-
+import { useClients, useCreateClient, useDeleteClient, useToggleClient, useUpdateClientExpiry } from "@/hooks/useAdmin";import { toast } from "sonner";
+const defaultAvatar =
+  "https://bahaswager.runasp.net/e69cbbf7-9815-4a2d-a5e9-f0c74a61ec37.png";
 const AdminPanel = () => {
   const { user, signOut } = useAuth();
   const { lang, setLang } = useLanguage();
   const navigate = useNavigate();
-  const { data: isAdmin, isLoading: checkingAdmin } = useIsAdmin();
-  const { data: clients, isLoading: loadingClients } = useClients();
+const isAdmin = user?.role?.toLowerCase() === "superadmin";
+const checkingAdmin = false;  const { data: clients, isLoading: loadingClients } = useClients();
   const createClient = useCreateClient();
   const deleteClient = useDeleteClient();
   const toggleClient = useToggleClient();
@@ -65,29 +65,45 @@ const AdminPanel = () => {
     return new Date(now.getTime() + val * (multipliers[form.unit] || multipliers.day)).toISOString();
   };
 
-  const handleCreate = async () => {
-    if (!form.client_name || !form.email || !form.password) {
-      toast.error(lang === "ar" ? "يرجى ملء جميع الحقول" : "Please fill all fields");
-      return;
-    }
-    if (form.password.length < 6) {
-      toast.error(lang === "ar" ? "كلمة المرور يجب أن تكون 6 أحرف على الأقل" : "Password must be at least 6 characters");
-      return;
-    }
-    try {
-      await createClient.mutateAsync({
-        client_name: form.client_name,
-        email: form.email,
-        password: form.password,
-        expires_at: calcExpiry(),
-      });
-      toast.success(lang === "ar" ? "تم إنشاء العميل بنجاح" : "Client created successfully");
-      setForm({ client_name: "", email: "", password: "", duration: "1", unit: "day" });
-      setShowForm(false);
-    } catch (e: any) {
-      toast.error(e.message);
-    }
+ const handleCreate = async () => {
+  if (!form.client_name || !form.email || !form.password) {
+    toast.error(lang === "ar" ? "يرجى ملء جميع الحقول" : "Please fill all fields");
+    return;
+  }
+
+  if (form.password.length < 6) {
+    toast.error(
+      lang === "ar"
+        ? "كلمة المرور يجب أن تكون 6 أحرف على الأقل"
+        : "Password must be at least 6 characters"
+    );
+    return;
+  }
+
+  const unitMap: Record<string, number> = {
+    minute: 1,
+    hour: 2,
+    day: 3,
+    month: 4,
+    year: 5,
   };
+
+  try {
+    await createClient.mutateAsync({
+      clientName: form.client_name,
+      email: form.email,
+      password: form.password,
+      duration: Number(form.duration),
+      unit: unitMap[form.unit],
+    });
+
+    toast.success(lang === "ar" ? "تم إنشاء العميل بنجاح" : "Client created successfully");
+    setForm({ client_name: "", email: "", password: "", duration: "1", unit: "day" });
+    setShowForm(false);
+  } catch (e: any) {
+    toast.error(e?.message || (lang === "ar" ? "فشل إنشاء العميل" : "Failed to create client"));
+  }
+};
 
   const handleDelete = async (userId: string, name: string) => {
     if (!confirm(lang === "ar" ? `هل أنت متأكد من حذف "${name}"؟` : `Are you sure you want to delete "${name}"?`)) return;
@@ -113,8 +129,14 @@ const AdminPanel = () => {
     return { label: lang === "ar" ? "نشط" : "Active", color: "text-primary" };
   };
 
-  const formatDate = (d: string) => new Date(d).toLocaleDateString(lang === "ar" ? "ar-SA" : "en-US", {
-    year: "numeric", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit",
+ const formatDate = (d: string) =>
+  new Date(d).toLocaleString(lang === "ar" ? "ar-SA" : "en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: true,
   });
 
   const inputClass = "w-full rounded-xl border border-border bg-secondary/30 px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary transition-all";
@@ -251,65 +273,117 @@ const AdminPanel = () => {
           </div>
         ) : (
           <div className="space-y-3">
-            {clients.map((client) => {
-              const status = getStatus(client);
-              return (
-                <motion.div
-                  key={client.id}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="glass-card p-5"
+     {clients.map((client) => {
+  const status = getStatus(client);
+
+  return (
+    <motion.div
+      key={client.id}
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="glass-card p-5"
+    >
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div className="flex min-w-0 flex-1 items-start gap-4">
+          <img
+            src={client.avatar_url || defaultAvatar}
+            alt={client.client_name}
+            className="h-14 w-14 shrink-0 rounded-full border border-border object-cover"
+            onError={(e) => {
+              e.currentTarget.src = defaultAvatar;
+            }}
+          />
+
+          <div className="min-w-0 flex-1">
+            <div className="mb-2 flex items-center gap-3">
+              <h3 className="truncate text-base font-bold text-foreground">
+                {client.client_name}
+              </h3>
+              <span className={`text-xs font-semibold ${status.color}`}>
+                {status.label}
+              </span>
+            </div>
+
+            <div className="space-y-1 text-sm text-muted-foreground">
+              <div className="flex items-center gap-2">
+                <span>{lang === "ar" ? "البريد:" : "Email:"}</span>
+                <span className="font-mono text-foreground">
+                  {client.client_email}
+                </span>
+                <button
+                  onClick={() =>
+                    handleCopy(client.client_email, `email-${client.id}`)
+                  }
+                  className="hover:text-primary"
                 >
-                  <div className="flex flex-wrap items-start justify-between gap-4">
-                    <div className="min-w-0 flex-1">
-                      <div className="flex items-center gap-3 mb-2">
-                        <h3 className="text-base font-bold text-foreground truncate">{client.client_name}</h3>
-                        <span className={`text-xs font-semibold ${status.color}`}>{status.label}</span>
-                      </div>
-                      <div className="space-y-1 text-sm text-muted-foreground">
-                        <div className="flex items-center gap-2">
-                          <span>{lang === "ar" ? "البريد:" : "Email:"}</span>
-                          <span className="font-mono text-foreground">{client.client_email}</span>
-                          <button onClick={() => handleCopy(client.client_email, `email-${client.id}`)} className="hover:text-primary">
-                            {copiedId === `email-${client.id}` ? <Check size={14} /> : <Copy size={14} />}
-                          </button>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <Clock size={14} />
-                          <span>{lang === "ar" ? "ينتهي:" : "Expires:"} {formatDate(client.expires_at)}</span>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <button
-                        onClick={() => navigate(`/card/${client.user_id}`)}
-                        className="icon-btn !p-2.5"
-                        title={lang === "ar" ? "عرض البطاقة" : "View Card"}
-                      >
-                        <Eye size={16} className="text-muted-foreground" />
-                      </button>
-                      <button
-                        onClick={() => toggleClient.mutate({ id: client.id, is_active: !client.is_active })}
-                        className="icon-btn !p-2.5"
-                        title={client.is_active ? (lang === "ar" ? "تعطيل" : "Disable") : (lang === "ar" ? "تفعيل" : "Enable")}
-                      >
-                        {client.is_active
-                          ? <ToggleRight size={16} className="text-primary" />
-                          : <ToggleLeft size={16} className="text-muted-foreground" />}
-                      </button>
-                      <button
-                        onClick={() => handleDelete(client.user_id, client.client_name)}
-                        className="icon-btn !p-2.5"
-                        title={lang === "ar" ? "حذف" : "Delete"}
-                      >
-                        <Trash2 size={16} className="text-destructive" />
-                      </button>
-                    </div>
-                  </div>
-                </motion.div>
-              );
-            })}
+                  {copiedId === `email-${client.id}` ? (
+                    <Check size={14} />
+                  ) : (
+                    <Copy size={14} />
+                  )}
+                </button>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <Clock size={14} />
+                <span>
+                  {lang === "ar" ? "ينتهي:" : "Expires:"}{" "}
+                  {formatDate(client.expires_at)}
+                </span>
+              </div>
+            </div>
           </div>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => navigate(`/card/${client.user_id}`)}
+            className="icon-btn !p-2.5"
+            title={lang === "ar" ? "عرض البطاقة" : "View Card"}
+          >
+            <Eye size={16} className="text-muted-foreground" />
+          </button>
+
+          <button
+            onClick={() =>
+              toggleClient.mutate({
+                id: client.id,
+                is_active: !client.is_active,
+              })
+            }
+            className="icon-btn !p-2.5"
+            title={
+              client.is_active
+                ? lang === "ar"
+                  ? "تعطيل"
+                  : "Disable"
+                : lang === "ar"
+                ? "تفعيل"
+                : "Enable"
+            }
+          >
+            {client.is_active ? (
+              <ToggleRight size={16} className="text-primary" />
+            ) : (
+              <ToggleLeft size={16} className="text-muted-foreground" />
+            )}
+          </button>
+
+          <button
+            onClick={() => handleDelete(client.user_id, client.client_name)}
+            className="icon-btn !p-2.5"
+            title={lang === "ar" ? "حذف" : "Delete"}
+          >
+            <Trash2 size={16} className="text-destructive" />
+          </button>
+        </div>
+      </div>
+    </motion.div>
+  );
+})}
+          </div>
+
+
         )}
       </div>
     </div>

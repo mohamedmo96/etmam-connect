@@ -28,8 +28,8 @@ const App = () => (
 <Route path="/:userId" element={<ClientCard />} />         
     <Route path="/login" element={<Login />} />
               <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/admin" element={<AdminPanel />} />
-              <Route path="/card/:userId" element={<ClientCard />} />
+<Route path="/admin" element={<AdminPanel />} />        
+      <Route path="/card/:userId" element={<ClientCard />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>
