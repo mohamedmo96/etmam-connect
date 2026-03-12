@@ -3,13 +3,11 @@ import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   LogOut, Save, Eye, User, Phone, Globe, Award, Briefcase, GraduationCap,
-  Plus, X, Loader2, Check, Languages, Camera, Upload, Clock,
+  Plus, X, Loader2, Languages, Camera, Upload, Clock,
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useCardData, useUpdateCardData } from "@/hooks/useCardData";
-import { useClientStatus, useIsAdmin } from "@/hooks/useAdmin";
-import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
 const Dashboard = () => {
@@ -191,9 +189,16 @@ const Dashboard = () => {
   }, [cardData]);
 
   // Check client expiration
-  const { data: clientStatus } = useClientStatus();
-  const isClientExpired = clientStatus && (!clientStatus.is_active || new Date(clientStatus.expires_at) < new Date());
-  const { data: isAdminUser } = useIsAdmin();
+const isAdminUser = user?.role === "Admin";
+
+const isClientExpired =
+  !!cardData &&
+  !isAdminUser &&
+  (
+    !cardData.is_subscription_active ||
+    (cardData.subscription_end_date &&
+      new Date(cardData.subscription_end_date) < new Date())
+  );
 
   if (!user) {
     navigate("/login");
@@ -229,15 +234,14 @@ const Dashboard = () => {
     setForm((prev) => ({ ...prev, [key]: value }));
   };
 
-  const handleSave = async () => {
-    if (!form.id) return;
-    try {
-      await updateCard.mutateAsync(form as any);
-      toast.success(t("saved"));
-    } catch (e: any) {
-      toast.error(e.message);
-    }
-  };
+const handleSave = async () => {
+  try {
+    await updateCard.mutateAsync(form as any);
+    toast.success(t("saved"));
+  } catch (e: any) {
+    toast.error(e.message || "Save failed");
+  }
+};
 
   const addSkill = () => {
     if (!newSkill.trim()) return;
@@ -253,47 +257,16 @@ const Dashboard = () => {
     handleChange("skills", skills);
   };
 
-  const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file || !user) return;
-    
-    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
-    if (!allowedTypes.includes(file.type)) {
-      toast.error(lang === "ar" ? "يرجى رفع صورة (JPG, PNG, WEBP)" : "Please upload an image (JPG, PNG, WEBP)");
-      return;
-    }
-    
-    setUploading(true);
-    try {
-      const ext = file.name.split('.').pop();
-      const filePath = `${user.id}/avatar.${ext}`;
-      
-      const { error: uploadError } = await supabase.storage
-        .from('avatars')
-        .upload(filePath, file, { upsert: true });
-      
-      if (uploadError) throw uploadError;
-      
-      const { data: { publicUrl } } = supabase.storage
-        .from('avatars')
-        .getPublicUrl(filePath);
-      
-      // Add cache buster
-      const avatarUrl = `${publicUrl}?t=${Date.now()}`;
-      handleChange("avatar_url", avatarUrl);
-      
-      // Auto-save
-      if (form.id) {
-        await updateCard.mutateAsync({ ...form, avatar_url: avatarUrl, id: form.id } as any);
-        toast.success(lang === "ar" ? "تم رفع الصورة بنجاح" : "Photo uploaded successfully");
-      }
-    } catch (err: any) {
-      toast.error(err.message);
-    } finally {
-      setUploading(false);
-    }
-  };
+const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const file = e.target.files?.[0];
+  if (!file) return;
 
+  toast.error(
+    lang === "ar"
+      ? "رفع الصور لم يتم ربطه بالـ API بعد"
+      : "Image upload is not connected to the API yet"
+  );
+};
   const tabs = [
     { id: "basic", label: t("basic_info"), icon: User },
     { id: "contact", label: t("contact_info"), icon: Phone },

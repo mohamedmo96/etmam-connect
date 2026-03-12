@@ -9,28 +9,25 @@ import { toast } from "sonner";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [isSignUp, setIsSignUp] = useState(false);
   const [loading, setLoading] = useState(false);
-  const { signIn, signUp } = useAuth();
+
+  const { signIn } = useAuth();
   const { lang, setLang, t } = useLanguage();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+
     try {
-      const { error } = isSignUp
-        ? await signUp(email, password)
-        : await signIn(email, password);
+      const { error } = await signIn(email, password);
+
       if (error) {
-        toast.error(error.message);
-      } else {
-        if (isSignUp) {
-          toast.success("Check your email to confirm your account!");
-        } else {
-          navigate("/dashboard");
-        }
+        toast.error(error);
+        return;
       }
+
+      navigate("/dashboard");
     } finally {
       setLoading(false);
     }
@@ -118,19 +115,9 @@ const Login = () => {
             className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-3 text-sm font-semibold text-primary-foreground transition-all duration-200 hover:brightness-110 disabled:opacity-50"
           >
             {loading && <Loader2 size={16} className="animate-spin" />}
-            {isSignUp ? t("sign_up") : t("sign_in")}
+            {t("sign_in")}
           </motion.button>
         </form>
-
-        <p className="mt-6 text-center text-sm text-muted-foreground">
-          {isSignUp ? t("back_to_card") : t("need_account")}{" "}
-          <button
-            onClick={() => setIsSignUp(!isSignUp)}
-            className="text-primary hover:underline"
-          >
-            {isSignUp ? t("sign_in") : t("sign_up")}
-          </button>
-        </p>
       </motion.div>
     </div>
   );

@@ -25,8 +25,8 @@ const App = () => (
           <BrowserRouter>
             <ParticleBackground />
             <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/login" element={<Login />} />
+<Route path="/:userId" element={<ClientCard />} />         
+    <Route path="/login" element={<Login />} />
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/admin" element={<AdminPanel />} />
               <Route path="/card/:userId" element={<ClientCard />} />

@@ -14,7 +14,7 @@ import { useCardData } from "@/hooks/useCardData";
 const BusinessCard = ({ overrideData }: { overrideData?: any } = {}) => {
   const [flipped, setFlipped] = useState(false);
   const { lang, setLang, t } = useLanguage();
-  const { data: fetchedData, isLoading } = useCardData();
+const { data: fetchedData, isLoading } = useCardData(!overrideData);
   const cardData = overrideData || fetchedData;
   const cardRef = useRef<HTMLDivElement>(null);
 
@@ -41,10 +41,13 @@ const BusinessCard = ({ overrideData }: { overrideData?: any } = {}) => {
   const emailAddr = d.email || "mahmoud@etmam.com";
   const websiteUrl = d.website_url || "https://etmam.com";
   const linkedinUrl = d.linkedin_url || "https://linkedin.com";
+  const publicProfileUrl = d.public_profile_url || "";
+const qrValue = d.qr_code_value || publicProfileUrl || linkedinUrl || window.location.href;
   const skills = Array.isArray(d.skills) ? d.skills : ["Business Analysis", "Requirements Gathering", "Process Optimization", "Stakeholder Management", "Agile Methodology", "Data Analysis"];
   const experience = Array.isArray(d.experience) ? d.experience : [{ title_en: "Business Analyst", title_ar: "محلل أعمال", company_en: "Etmam for Information Technology", company_ar: "إتمام لتقنية المعلومات" }];
   const education = Array.isArray(d.education) ? d.education : [{ degree_en: "Bachelor's Degree", degree_ar: "بكالوريوس", field_en: "Business Information Systems", field_ar: "نظم معلومات إدارية" }];
-
+const defaultAvatarUrl = "http://bahaswager.runasp.net/e69cbbf7-9815-4a2d-a5e9-f0c74a61ec37.png";
+const avatarSrc = d.avatar_url || defaultAvatarUrl;
   const handleSaveContact = () => {
     const vcard = `BEGIN:VCARD\nVERSION:3.0\nFN:${d.name_en || "Mahmoud Abdelrahman"}\nTITLE:${d.title_en || "Business Analyst"}\nORG:${d.company_en || "Etmam"}\nTEL:${phoneNum}\nEMAIL:${emailAddr}\nURL:${websiteUrl}\nEND:VCARD`;
     const blob = new Blob([vcard], { type: "text/vcard" });
@@ -60,8 +63,7 @@ const BusinessCard = ({ overrideData }: { overrideData?: any } = {}) => {
     }
   };
 
-  if (isLoading) {
-    return (
+if (!overrideData && isLoading) {    return (
       <div className="relative z-10 flex min-h-screen items-center justify-center">
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex flex-col items-center gap-4">
           <Loader2 className="h-8 w-8 animate-spin text-primary" />
@@ -141,8 +143,14 @@ const BusinessCard = ({ overrideData }: { overrideData?: any } = {}) => {
                 <div className="absolute -inset-[4px] rounded-full bg-gradient-to-br from-primary/30 via-primary/10 to-transparent" />
                 <div className="absolute -inset-[4px] rounded-full border border-primary/20" />
                 <div className="relative h-20 w-20 overflow-hidden rounded-full border-2 border-background">
-                  <img src={d.avatar_url || profilePhoto} alt={name} className="h-full w-full object-cover" />
-                </div>
+<img
+  src={avatarSrc}
+  alt={name}
+  className="h-full w-full object-cover"
+  onError={(e) => {
+    e.currentTarget.src = defaultAvatarUrl;
+  }}
+/>                </div>
               </motion.div>
 
               {/* Name & Title & Company */}
@@ -263,20 +271,24 @@ const BusinessCard = ({ overrideData }: { overrideData?: any } = {}) => {
               </div>
 
               {/* QR Code - smaller */}
-              <motion.div
-                className="mb-4 flex flex-col items-center"
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.8, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-              >
-                <p className="mb-1.5 text-[8px] font-bold uppercase tracking-[0.2em] text-muted-foreground/70">
-                  {t("scan_linkedin")}
-                </p>
-                <div className="rounded-xl border border-border/25 bg-secondary/10 p-2.5">
-                  <QRCodeSVG value={linkedinUrl} size={70} bgColor="transparent" fgColor="hsl(210, 100%, 55%)" />
-                </div>
-              </motion.div>
-
+         <motion.div
+  className="mb-4 flex flex-col items-center"
+  initial={{ opacity: 0, scale: 0.9 }}
+  animate={{ opacity: 1, scale: 1 }}
+  transition={{ delay: 0.8, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+>
+  <p className="mb-1.5 text-[8px] font-bold uppercase tracking-[0.2em] text-muted-foreground/70">
+    {t("scan_linkedin")}
+  </p>
+  <div className="rounded-xl border border-border/25 bg-secondary/10 p-2.5">
+    <QRCodeSVG
+      value={qrValue}
+      size={70}
+      bgColor="transparent"
+      fgColor="hsl(210, 100%, 55%)"
+    />
+  </div>
+</motion.div>
               {/* Actions */}
               <motion.div
                 className="flex w-full items-center gap-2"
