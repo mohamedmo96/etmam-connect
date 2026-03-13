@@ -69,9 +69,9 @@ const { data: fetchedData, isLoading } = useCardData(!overrideData);
   const handleMouseLeave = () => { x.set(0); y.set(0); };
 
   const d = cardData || {} as any;
-  const name = lang === "ar" ? (d.name_ar || "محمود عبدالرحمن") : (d.name_en || "Mahmoud Abdelrahman");
-  const title = lang === "ar" ? (d.title_ar || "محلل أعمال") : (d.title_en || "Business Analyst");
-  const company = lang === "ar" ? (d.company_ar || "إتمام لتقنية المعلومات") : (d.company_en || "Etmam for Information Technology");
+const name = lang === "ar" ? (d.name_ar || "") : (d.name_en || "");
+const title = lang === "ar" ? (d.title_ar || "") : (d.title_en || "");
+const company = lang === "ar" ? (d.company_ar || "") : (d.company_en || "");
   const about = lang === "ar" ? (d.about_ar || "محلل أعمال شغوف بالتقنية وتحسين العمليات") : (d.about_en || "Passionate Business Analyst with expertise in bridging the gap between business needs and technology solutions.");
   const locationText = lang === "ar" ? (d.location_ar || "السليمانية، الرياض") : (d.location_en || "Sulaymaniyah, Riyadh 12242");
   const phoneNum = d.phone || "+966 560 303 813";

@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
 import { api } from "@/lib/api";
 import BusinessCard from "./BusinessCard";
-
+import { useEffect } from "react";
 const WEBSITE = 1;
 const LINKEDIN = 2;
 const WHATSAPP = 3;
@@ -84,6 +84,35 @@ const ClientCard = () => {
     },
   });
 
+  useEffect(() => {
+  if (!cardData) return;
+
+  document.title = "MyCard";
+
+  let appleTitleMeta = document.querySelector('meta[name="apple-mobile-web-app-title"]');
+  if (!appleTitleMeta) {
+    appleTitleMeta = document.createElement("meta");
+    appleTitleMeta.setAttribute("name", "apple-mobile-web-app-title");
+    document.head.appendChild(appleTitleMeta);
+  }
+  appleTitleMeta.setAttribute("content", "MyCard");
+
+  let themeMeta = document.querySelector('meta[name="theme-color"]');
+  if (!themeMeta) {
+    themeMeta = document.createElement("meta");
+    themeMeta.setAttribute("name", "theme-color");
+    document.head.appendChild(themeMeta);
+  }
+  themeMeta.setAttribute("content", "#081225");
+
+  let appleTouchIcon = document.querySelector('link[rel="apple-touch-icon"]');
+  if (!appleTouchIcon) {
+    appleTouchIcon = document.createElement("link");
+    appleTouchIcon.setAttribute("rel", "apple-touch-icon");
+    document.head.appendChild(appleTouchIcon);
+  }
+  appleTouchIcon.setAttribute("href", "/icons/mycard-180.png");
+}, [cardData]);
   if (isLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center">
