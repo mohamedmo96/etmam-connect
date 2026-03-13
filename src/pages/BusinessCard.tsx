@@ -17,7 +17,7 @@ type BeforeInstallPromptEvent = Event & {
 };
 
 const BusinessCard = ({ overrideData }: { overrideData?: any } = {}) => {
-  const [flipped, setFlipped] = useState(false);
+const [flipped, setFlipped] = useState(false);
 const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
 const [showInstallHelp, setShowInstallHelp] = useState(false);
 
@@ -30,6 +30,11 @@ const isAndroid = useMemo(
   () => /android/i.test(window.navigator.userAgent),
   []
 );
+
+const isMobile = useMemo(() => {
+  if (typeof window === "undefined") return false;
+  return window.matchMedia("(max-width: 640px)").matches;
+}, []);
 
 useEffect(() => {
   const handleBeforeInstallPrompt = (e: Event) => {
