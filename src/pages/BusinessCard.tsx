@@ -139,19 +139,25 @@ if (!overrideData && isLoading) {    return (
     {/* Card */}
 <div
   ref={cardRef}
-  className="mx-auto w-full max-w-[420px] max-sm:h-[calc(100svh-2rem)]"
-  style={{ perspective: "1200px" }}
-  onMouseMove={handleMouseMove}
-  onMouseLeave={handleMouseLeave}
+  className="mx-auto w-full max-w-[420px]"
+  style={{ perspective: isMobile ? "none" : "1200px" }}
+  onMouseMove={isMobile ? undefined : handleMouseMove}
+  onMouseLeave={isMobile ? undefined : handleMouseLeave}
 >
-      <motion.div
-  className="relative max-sm:h-full"
-          style={{ transformStyle: "preserve-3d", rotateX: flipped ? 0 : rotateX, rotateY: flipped ? 180 : rotateY2 }}
-          animate={{ rotateY: flipped ? 180 : 0 }}
-          transition={{ duration: 0.7, ease: [0.68, -0.15, 0.27, 1.15] }}
-        >
+ <motion.div
+  className="relative"
+  style={{
+    transformStyle: isMobile ? "flat" : "preserve-3d",
+    rotateX: isMobile || flipped ? 0 : rotateX,
+    rotateY: isMobile ? 0 : rotateY2,
+  }}
+  animate={isMobile ? {} : { rotateY: flipped ? 180 : 0 }}
+  transition={{ duration: 0.7, ease: [0.68, -0.15, 0.27, 1.15] }}
+>
           {/* ===== FRONT ===== */}
-  <motion.div
+          {(!isMobile || !flipped) && (
+
+          <motion.div
   className="glass-card w-full overflow-hidden max-sm:h-full max-sm:overflow-y-auto max-sm:overflow-x-hidden"
             style={{ backfaceVisibility: "hidden" }}
             initial={{ opacity: 0, y: 40, scale: 0.95 }}
@@ -382,9 +388,12 @@ if (!overrideData && isLoading) {    return (
             {/* Bottom accent */}
             <div className="h-[2px] bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
           </motion.div>
+)}
 
           {/* ===== BACK ===== */}
-        <div
+          {(!isMobile || flipped) && (
+
+           <div
   className="glass-card absolute inset-0 w-full overflow-y-auto overflow-x-hidden scrollbar-none max-sm:h-full"
             style={{ backfaceVisibility: "hidden", transform: "rotateY(180deg)" }}
           >
@@ -540,6 +549,7 @@ if (!overrideData && isLoading) {    return (
               </motion.div>
             </div>
           </div>
+          )}
         </motion.div>
       </div>
 
