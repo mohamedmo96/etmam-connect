@@ -41,14 +41,20 @@ const Login = () => {
 
   return (
     <div className="relative z-10 flex min-h-screen items-center justify-center px-4 py-8">
-      <Link
-        to={userId ? `/card/${userId}` : "/"}
-        className="absolute left-4 top-4 flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
-      >
-        <ArrowLeft size={16} />
-        {t("back_to_card")}
-      </Link>
-
+   <button
+  type="button"
+  onClick={() => {
+    if (window.history.length > 1) {
+      navigate(-1);
+    } else {
+      navigate("/");
+    }
+  }}
+  className="absolute left-4 top-4 flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
+>
+  <ArrowLeft size={16} />
+  {t("back_to_card")}
+</button>
       <button
         onClick={() => setLang(lang === "en" ? "ar" : "en")}
         className="icon-btn absolute right-4 top-4"
