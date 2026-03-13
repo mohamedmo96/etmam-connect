@@ -12,7 +12,10 @@ interface LanguageContextType {
 const translations: Record<string, Record<Lang, string>> = {
   // Card front
   save_contact: { en: "Save Contact", ar: "حفظ جهة الاتصال" },
-  scan_linkedin: { en: "Scan to connect on LinkedIn", ar: "امسح للتواصل عبر لينكدإن" },
+scan_linkedin: {
+  en: "Scan to view my digital card",
+  ar: "امسح لعرض بطاقتي الرقمية"
+},
   call: { en: "Call", ar: "اتصال" },
   location: { en: "Location", ar: "الموقع" },
   // Card back

@@ -79,7 +79,7 @@ const company = lang === "ar" ? (d.company_ar || "") : (d.company_en || "");
   const websiteUrl = d.website_url || "https://etmam.com";
   const linkedinUrl = d.linkedin_url || "https://linkedin.com";
   const publicProfileUrl = d.public_profile_url || "";
-const qrValue = d.qr_code_value || publicProfileUrl || linkedinUrl || window.location.href;
+const qrValue = d.qr_code_value || publicProfileUrl || window.location.href;
   const skills = Array.isArray(d.skills) ? d.skills : ["Business Analysis", "Requirements Gathering", "Process Optimization", "Stakeholder Management", "Agile Methodology", "Data Analysis"];
   const experience = Array.isArray(d.experience) ? d.experience : [{ title_en: "Business Analyst", title_ar: "محلل أعمال", company_en: "Etmam for Information Technology", company_ar: "إتمام لتقنية المعلومات" }];
   const education = Array.isArray(d.education) ? d.education : [{ degree_en: "Bachelor's Degree", degree_ar: "بكالوريوس", field_en: "Business Information Systems", field_ar: "نظم معلومات إدارية" }];
@@ -128,26 +128,26 @@ if (!overrideData && isLoading) {    return (
   );
 
   return (
-    <div className="relative z-10 flex h-[100dvh] items-center justify-center overflow-hidden px-3">
-      {/* Top controls removed - integrated into card header */}
+<div className="relative z-10 min-h-[100svh] overflow-x-hidden px-3 py-4 sm:flex sm:items-center sm:justify-center">
+        {/* Top controls removed - integrated into card header */}
 
-      {/* Card */}
-      <div
-        ref={cardRef}
-        className="w-full max-w-[420px] max-h-[calc(100dvh-2rem)]"
-        style={{ perspective: "1200px" }}
-        onMouseMove={handleMouseMove}
-        onMouseLeave={handleMouseLeave}
-      >
-        <motion.div
-          className="relative"
+    {/* Card */}
+<div
+  ref={cardRef}
+  className="mx-auto w-full max-w-[420px] max-sm:h-[calc(100svh-2rem)]"
+  style={{ perspective: "1200px" }}
+  onMouseMove={handleMouseMove}
+  onMouseLeave={handleMouseLeave}
+>
+      <motion.div
+  className="relative max-sm:h-full"
           style={{ transformStyle: "preserve-3d", rotateX: flipped ? 0 : rotateX, rotateY: flipped ? 180 : rotateY2 }}
           animate={{ rotateY: flipped ? 180 : 0 }}
           transition={{ duration: 0.7, ease: [0.68, -0.15, 0.27, 1.15] }}
         >
           {/* ===== FRONT ===== */}
-          <motion.div
-            className="glass-card w-full overflow-hidden"
+  <motion.div
+  className="glass-card w-full overflow-hidden max-sm:h-full max-sm:overflow-y-auto max-sm:overflow-x-hidden"
             style={{ backfaceVisibility: "hidden" }}
             initial={{ opacity: 0, y: 40, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -379,8 +379,8 @@ if (!overrideData && isLoading) {    return (
           </motion.div>
 
           {/* ===== BACK ===== */}
-          <div
-            className="glass-card absolute inset-0 w-full max-h-[calc(100dvh-2rem)] overflow-y-auto overflow-x-hidden scrollbar-none"
+        <div
+  className="glass-card absolute inset-0 w-full overflow-y-auto overflow-x-hidden scrollbar-none max-sm:h-full"
             style={{ backfaceVisibility: "hidden", transform: "rotateY(180deg)" }}
           >
             <Corner className="left-3 top-3" />
@@ -539,13 +539,13 @@ if (!overrideData && isLoading) {    return (
       </div>
 
       {/* Footer */}
-      <motion.p
-        className="fixed bottom-2 left-0 right-0 text-center text-[8px] font-medium tracking-[0.3em] uppercase text-muted-foreground/20"
+  <motion.p
+  className="mt-3 pb-2 text-center text-[8px] font-medium tracking-[0.3em] uppercase text-muted-foreground/20"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1.2 }}
       >
-        Powered by Etmam
+        Powered by  Codexa
       </motion.p>
 
 
