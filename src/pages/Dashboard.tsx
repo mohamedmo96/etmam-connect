@@ -213,6 +213,8 @@ useEffect(() => {
   // Check client expiration
 const isAdminUser = user?.role === "Admin";
 
+
+
 const isClientExpired =
   !!cardData &&
   !isAdminUser &&
@@ -278,6 +280,47 @@ const handleSave = async () => {
     skills.splice(i, 1);
     handleChange("skills", skills);
   };
+
+
+  const addExperience = () => {
+  const arr = Array.isArray(form.experiences) ? [...form.experiences] : [];
+  arr.push({
+    title_en: "",
+    title_ar: "",
+    company_en: "",
+    company_ar: "",
+    description_en: "",
+    description_ar: "",
+  });
+  handleChange("experiences", arr);
+};
+
+const removeExperience = (index: number) => {
+  const arr = Array.isArray(form.experiences) ? [...form.experiences] : [];
+  arr.splice(index, 1);
+  handleChange("experiences", arr);
+};
+
+const addEducation = () => {
+  const arr = Array.isArray(form.educations) ? [...form.educations] : [];
+  arr.push({
+    degree_en: "",
+    degree_ar: "",
+    field_en: "",
+    field_ar: "",
+    institution_en: "",
+    institution_ar: "",
+  });
+  handleChange("educations", arr);
+};
+
+const removeEducation = (index: number) => {
+  const arr = Array.isArray(form.educations) ? [...form.educations] : [];
+  arr.splice(index, 1);
+  handleChange("educations", arr);
+};
+
+
 
 const handleImageSelect = async (
   e: React.ChangeEvent<HTMLInputElement>,
