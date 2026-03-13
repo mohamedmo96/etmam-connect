@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowLeft, Mail, Lock, Loader2, Languages } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
@@ -11,6 +11,7 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const { userId } = useParams();
   const { signIn } = useAuth();
   const { lang, setLang, t } = useLanguage();
   const navigate = useNavigate();
@@ -20,29 +21,28 @@ const Login = () => {
     setLoading(true);
 
     try {
-   const { error, role } = await signIn(email, password);
+      const { error, role } = await signIn(email, password);
 
-if (error) {
-  toast.error(error);
-  return;
-}
+      if (error) {
+        toast.error(error);
+        return;
+      }
 
-if (role?.toLowerCase() === "superadmin") {
-  navigate("/admin");
-  return;
-}
+      if (role?.toLowerCase() === "superadmin") {
+        navigate("/admin");
+        return;
+      }
 
-navigate("/dashboard");
+      navigate("/dashboard");
     } finally {
       setLoading(false);
     }
   };
 
-  
   return (
     <div className="relative z-10 flex min-h-screen items-center justify-center px-4 py-8">
       <Link
-        to="/"
+        to={userId ? `/card/${userId}` : "/"}
         className="absolute left-4 top-4 flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
       >
         <ArrowLeft size={16} />
