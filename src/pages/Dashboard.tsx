@@ -194,13 +194,75 @@ const onCropComplete = (_: any, croppedAreaPixelsValue: any) => {
     skillInputRef.current?.focus();
   };
 
-  useEffect(() => {
-    if (cardData) {
-      setForm({ ...cardData });
-    }
-  }, [cardData]);
+useEffect(() => {
+  if (!cardData) return;
 
-  // ok
+  const socialLinks = Array.isArray(cardData.socialLinks) ? cardData.socialLinks : [];
+
+  const website = socialLinks.find((x: any) => x.platform === 1)?.url || "";
+  const linkedin = socialLinks.find((x: any) => x.platform === 2)?.url || "";
+  const whatsapp = socialLinks.find((x: any) => x.platform === 3)?.url || "";
+
+  setForm({
+    name_en: cardData.nameEn || "",
+    name_ar: cardData.nameAr || "",
+
+    title_en: cardData.titleEn || "",
+    title_ar: cardData.titleAr || "",
+
+    company_en: cardData.companyEn || "",
+    company_ar: cardData.companyAr || "",
+
+    about_en: cardData.aboutEn || "",
+    about_ar: cardData.aboutAr || "",
+
+    phone: cardData.contactPhone || "",
+    email: cardData.contactEmail || "",
+
+    location_en: cardData.locationEn || "",
+    location_ar: cardData.locationAr || "",
+
+    avatar_url: cardData.avatarUrl || "",
+    cv_url: cardData.cvUrl || "",
+
+    website_url: website,
+    linkedin_url: linkedin,
+    whatsapp_url: whatsapp,
+
+    skills: Array.isArray(cardData.skills)
+      ? cardData.skills.map((x: any) => x.nameEn || x.nameAr || "")
+      : [],
+
+    experience: Array.isArray(cardData.experiences)
+      ? cardData.experiences.map((x: any) => ({
+          title_en: x.titleEn || "",
+          title_ar: x.titleAr || "",
+          company_en: x.companyEn || "",
+          company_ar: x.companyAr || "",
+          description_en: x.descriptionEn || "",
+          description_ar: x.descriptionAr || "",
+          start_date: x.startDate || "",
+          end_date: x.endDate || "",
+          is_current: x.isCurrent || false,
+          display_order: x.displayOrder || 0,
+        }))
+      : [],
+
+    education: Array.isArray(cardData.educations)
+      ? cardData.educations.map((x: any) => ({
+          degree_en: x.degreeEn || "",
+          degree_ar: x.degreeAr || "",
+          field_en: x.fieldEn || "",
+          field_ar: x.fieldAr || "",
+          institution_en: x.institutionEn || "",
+          institution_ar: x.institutionAr || "",
+          start_date: x.startDate || "",
+          end_date: x.endDate || "",
+          display_order: x.displayOrder || 0,
+        }))
+      : [],
+  });
+}, [cardData]);
 
   // Check client expiration
 const isAdminUser = user?.role === "Admin";
