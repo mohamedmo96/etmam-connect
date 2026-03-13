@@ -263,7 +263,6 @@ useEffect(() => {
       : [],
   });
 }, [cardData]);
-
   // Check client expiration
 const isAdminUser = user?.role === "Admin";
 
@@ -332,6 +331,53 @@ const handleSave = async () => {
     skills.splice(i, 1);
     handleChange("skills", skills);
   };
+
+
+
+  const addExperience = () => {
+  const arr = Array.isArray(form.experience) ? [...form.experience] : [];
+  arr.push({
+    title_en: "",
+    title_ar: "",
+    company_en: "",
+    company_ar: "",
+    description_en: "",
+    description_ar: "",
+    start_date: "",
+    end_date: "",
+    is_current: false,
+    display_order: arr.length + 1,
+  });
+  handleChange("experience", arr);
+};
+
+const removeExperience = (i: number) => {
+  const arr = Array.isArray(form.experience) ? [...form.experience] : [];
+  arr.splice(i, 1);
+  handleChange("experience", arr);
+};
+
+const addEducation = () => {
+  const arr = Array.isArray(form.education) ? [...form.education] : [];
+  arr.push({
+    degree_en: "",
+    degree_ar: "",
+    field_en: "",
+    field_ar: "",
+    institution_en: "",
+    institution_ar: "",
+    start_date: "",
+    end_date: "",
+    display_order: arr.length + 1,
+  });
+  handleChange("education", arr);
+};
+
+const removeEducation = (i: number) => {
+  const arr = Array.isArray(form.education) ? [...form.education] : [];
+  arr.splice(i, 1);
+  handleChange("education", arr);
+};
 
 const handleImageSelect = async (
   e: React.ChangeEvent<HTMLInputElement>,
@@ -833,87 +879,153 @@ const finalImageUrl = uploadedUrl.replace("http://", "https://");
               </div>
             )}
 
-            {activeTab === "experience" && (
-              <div className="space-y-4">
-                {(Array.isArray(form.experience) ? form.experience : []).map((exp: any, i: number) => (
-                  <div key={i} className="grid gap-3 rounded-xl border border-border p-4 md:grid-cols-2">
-                    <div>
-                      <label className={labelClass}>{t("title")} ({t("english")})</label>
-                      <input className={inputClass} value={exp.title_en || ""} onChange={(e) => {
-                        const arr = [...(form.experience as any[])];
-                        arr[i] = { ...arr[i], title_en: e.target.value };
-                        handleChange("experience", arr);
-                      }} />
-                    </div>
-                    <div>
-                      <label className={labelClass}>{t("title")} ({t("arabic")})</label>
-                      <input className={inputClass} dir="rtl" value={exp.title_ar || ""} onChange={(e) => {
-                        const arr = [...(form.experience as any[])];
-                        arr[i] = { ...arr[i], title_ar: e.target.value };
-                        handleChange("experience", arr);
-                      }} />
-                    </div>
-                    <div>
-                      <label className={labelClass}>{t("company")} ({t("english")})</label>
-                      <input className={inputClass} value={exp.company_en || ""} onChange={(e) => {
-                        const arr = [...(form.experience as any[])];
-                        arr[i] = { ...arr[i], company_en: e.target.value };
-                        handleChange("experience", arr);
-                      }} />
-                    </div>
-                    <div>
-                      <label className={labelClass}>{t("company")} ({t("arabic")})</label>
-                      <input className={inputClass} dir="rtl" value={exp.company_ar || ""} onChange={(e) => {
-                        const arr = [...(form.experience as any[])];
-                        arr[i] = { ...arr[i], company_ar: e.target.value };
-                        handleChange("experience", arr);
-                      }} />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
+        {activeTab === "experience" && (
+  <div className="space-y-4">
+    <div className="flex justify-end">
+      <button onClick={addExperience} className="icon-btn !p-3">
+        <Plus size={18} className="text-primary" />
+      </button>
+    </div>
 
-            {activeTab === "education" && (
-              <div className="space-y-4">
-                {(Array.isArray(form.education) ? form.education : []).map((edu: any, i: number) => (
-                  <div key={i} className="grid gap-3 rounded-xl border border-border p-4 md:grid-cols-2">
-                    <div>
-                      <label className={labelClass}>Degree ({t("english")})</label>
-                      <input className={inputClass} value={edu.degree_en || ""} onChange={(e) => {
-                        const arr = [...(form.education as any[])];
-                        arr[i] = { ...arr[i], degree_en: e.target.value };
-                        handleChange("education", arr);
-                      }} />
-                    </div>
-                    <div>
-                      <label className={labelClass}>Degree ({t("arabic")})</label>
-                      <input className={inputClass} dir="rtl" value={edu.degree_ar || ""} onChange={(e) => {
-                        const arr = [...(form.education as any[])];
-                        arr[i] = { ...arr[i], degree_ar: e.target.value };
-                        handleChange("education", arr);
-                      }} />
-                    </div>
-                    <div>
-                      <label className={labelClass}>Field ({t("english")})</label>
-                      <input className={inputClass} value={edu.field_en || ""} onChange={(e) => {
-                        const arr = [...(form.education as any[])];
-                        arr[i] = { ...arr[i], field_en: e.target.value };
-                        handleChange("education", arr);
-                      }} />
-                    </div>
-                    <div>
-                      <label className={labelClass}>Field ({t("arabic")})</label>
-                      <input className={inputClass} dir="rtl" value={edu.field_ar || ""} onChange={(e) => {
-                        const arr = [...(form.education as any[])];
-                        arr[i] = { ...arr[i], field_ar: e.target.value };
-                        handleChange("education", arr);
-                      }} />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
+    {(Array.isArray(form.experience) ? form.experience : []).map((exp: any, i: number) => (
+      <div key={i} className="grid gap-3 rounded-xl border border-border p-4 md:grid-cols-2">
+        <div>
+          <label className={labelClass}>{t("title")} ({t("english")})</label>
+          <input
+            className={inputClass}
+            value={exp.title_en || ""}
+            onChange={(e) => {
+              const arr = [...(form.experience as any[])];
+              arr[i] = { ...arr[i], title_en: e.target.value };
+              handleChange("experience", arr);
+            }}
+          />
+        </div>
+
+        <div>
+          <label className={labelClass}>{t("title")} ({t("arabic")})</label>
+          <input
+            className={inputClass}
+            dir="rtl"
+            value={exp.title_ar || ""}
+            onChange={(e) => {
+              const arr = [...(form.experience as any[])];
+              arr[i] = { ...arr[i], title_ar: e.target.value };
+              handleChange("experience", arr);
+            }}
+          />
+        </div>
+
+        <div>
+          <label className={labelClass}>{t("company")} ({t("english")})</label>
+          <input
+            className={inputClass}
+            value={exp.company_en || ""}
+            onChange={(e) => {
+              const arr = [...(form.experience as any[])];
+              arr[i] = { ...arr[i], company_en: e.target.value };
+              handleChange("experience", arr);
+            }}
+          />
+        </div>
+
+        <div>
+          <label className={labelClass}>{t("company")} ({t("arabic")})</label>
+          <input
+            className={inputClass}
+            dir="rtl"
+            value={exp.company_ar || ""}
+            onChange={(e) => {
+              const arr = [...(form.experience as any[])];
+              arr[i] = { ...arr[i], company_ar: e.target.value };
+              handleChange("experience", arr);
+            }}
+          />
+        </div>
+
+        <div className="md:col-span-2 flex justify-end">
+          <button onClick={() => removeExperience(i)} className="icon-btn !p-2.5">
+            <X size={16} className="text-destructive" />
+          </button>
+        </div>
+      </div>
+    ))}
+  </div>
+)}
+
+     {activeTab === "education" && (
+  <div className="space-y-4">
+    <div className="flex justify-end">
+      <button onClick={addEducation} className="icon-btn !p-3">
+        <Plus size={18} className="text-primary" />
+      </button>
+    </div>
+
+    {(Array.isArray(form.education) ? form.education : []).map((edu: any, i: number) => (
+      <div key={i} className="grid gap-3 rounded-xl border border-border p-4 md:grid-cols-2">
+        <div>
+          <label className={labelClass}>Degree ({t("english")})</label>
+          <input
+            className={inputClass}
+            value={edu.degree_en || ""}
+            onChange={(e) => {
+              const arr = [...(form.education as any[])];
+              arr[i] = { ...arr[i], degree_en: e.target.value };
+              handleChange("education", arr);
+            }}
+          />
+        </div>
+
+        <div>
+          <label className={labelClass}>Degree ({t("arabic")})</label>
+          <input
+            className={inputClass}
+            dir="rtl"
+            value={edu.degree_ar || ""}
+            onChange={(e) => {
+              const arr = [...(form.education as any[])];
+              arr[i] = { ...arr[i], degree_ar: e.target.value };
+              handleChange("education", arr);
+            }}
+          />
+        </div>
+
+        <div>
+          <label className={labelClass}>Field ({t("english")})</label>
+          <input
+            className={inputClass}
+            value={edu.field_en || ""}
+            onChange={(e) => {
+              const arr = [...(form.education as any[])];
+              arr[i] = { ...arr[i], field_en: e.target.value };
+              handleChange("education", arr);
+            }}
+          />
+        </div>
+
+        <div>
+          <label className={labelClass}>Field ({t("arabic")})</label>
+          <input
+            className={inputClass}
+            dir="rtl"
+            value={edu.field_ar || ""}
+            onChange={(e) => {
+              const arr = [...(form.education as any[])];
+              arr[i] = { ...arr[i], field_ar: e.target.value };
+              handleChange("education", arr);
+            }}
+          />
+        </div>
+
+        <div className="md:col-span-2 flex justify-end">
+          <button onClick={() => removeEducation(i)} className="icon-btn !p-2.5">
+            <X size={16} className="text-destructive" />
+          </button>
+        </div>
+      </div>
+    ))}
+  </div>
+)}
           </motion.div>
         </AnimatePresence>
 
