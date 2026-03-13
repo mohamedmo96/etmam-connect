@@ -141,15 +141,13 @@ if (!overrideData && isLoading) {    return (
   ref={cardRef}
   className="mx-auto w-full max-w-[420px]"
   style={{ perspective: isMobile ? "none" : "1200px" }}
-  onMouseMove={isMobile ? undefined : handleMouseMove}
-  onMouseLeave={isMobile ? undefined : handleMouseLeave}
 >
- <motion.div
+<motion.div
   className="relative"
   style={{
     transformStyle: isMobile ? "flat" : "preserve-3d",
-    rotateX: isMobile || flipped ? 0 : rotateX,
-    rotateY: isMobile ? 0 : rotateY2,
+    rotateX: 0,
+    rotateY: 0,
   }}
   animate={isMobile ? {} : { rotateY: flipped ? 180 : 0 }}
   transition={{ duration: 0.7, ease: [0.68, -0.15, 0.27, 1.15] }}
