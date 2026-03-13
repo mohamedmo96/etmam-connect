@@ -197,72 +197,41 @@ const onCropComplete = (_: any, croppedAreaPixelsValue: any) => {
 useEffect(() => {
   if (!cardData) return;
 
-  const socialLinks = Array.isArray(cardData.socialLinks) ? cardData.socialLinks : [];
-
-  const website = socialLinks.find((x: any) => x.platform === 1)?.url || "";
-  const linkedin = socialLinks.find((x: any) => x.platform === 2)?.url || "";
-  const whatsapp = socialLinks.find((x: any) => x.platform === 3)?.url || "";
-
   setForm({
-    name_en: cardData.nameEn || "",
-    name_ar: cardData.nameAr || "",
-
-    title_en: cardData.titleEn || "",
-    title_ar: cardData.titleAr || "",
-
-    company_en: cardData.companyEn || "",
-    company_ar: cardData.companyAr || "",
-
-    about_en: cardData.aboutEn || "",
-    about_ar: cardData.aboutAr || "",
-
-    phone: cardData.contactPhone || "",
-    email: cardData.contactEmail || "",
-
-    location_en: cardData.locationEn || "",
-    location_ar: cardData.locationAr || "",
-
-    avatar_url: cardData.avatarUrl || "",
-    cv_url: cardData.cvUrl || "",
-
-    website_url: website,
-    linkedin_url: linkedin,
-    whatsapp_url: whatsapp,
-
-    skills: Array.isArray(cardData.skills)
-      ? cardData.skills.map((x: any) => x.nameEn || x.nameAr || "")
-      : [],
-
-    experience: Array.isArray(cardData.experiences)
-      ? cardData.experiences.map((x: any) => ({
-          title_en: x.titleEn || "",
-          title_ar: x.titleAr || "",
-          company_en: x.companyEn || "",
-          company_ar: x.companyAr || "",
-          description_en: x.descriptionEn || "",
-          description_ar: x.descriptionAr || "",
-          start_date: x.startDate || "",
-          end_date: x.endDate || "",
-          is_current: x.isCurrent || false,
-          display_order: x.displayOrder || 0,
+    ...cardData,
+    skills: Array.isArray(cardData.skills) ? cardData.skills : [],
+    experience: Array.isArray(cardData.experience)
+      ? cardData.experience
+      : Array.isArray(cardData.experiences)
+      ? cardData.experiences.map((exp: any) => ({
+          title_en: exp.title_en || exp.titleEn || "",
+          title_ar: exp.title_ar || exp.titleAr || "",
+          company_en: exp.company_en || exp.companyEn || "",
+          company_ar: exp.company_ar || exp.companyAr || "",
+          description_en: exp.description_en || exp.descriptionEn || "",
+          description_ar: exp.description_ar || exp.descriptionAr || "",
+          start_date: exp.start_date || exp.startDate || null,
+          end_date: exp.end_date || exp.endDate || null,
+          is_current: exp.is_current || exp.isCurrent || false,
         }))
       : [],
-
-    education: Array.isArray(cardData.educations)
-      ? cardData.educations.map((x: any) => ({
-          degree_en: x.degreeEn || "",
-          degree_ar: x.degreeAr || "",
-          field_en: x.fieldEn || "",
-          field_ar: x.fieldAr || "",
-          institution_en: x.institutionEn || "",
-          institution_ar: x.institutionAr || "",
-          start_date: x.startDate || "",
-          end_date: x.endDate || "",
-          display_order: x.displayOrder || 0,
+    education: Array.isArray(cardData.education)
+      ? cardData.education
+      : Array.isArray(cardData.educations)
+      ? cardData.educations.map((edu: any) => ({
+          degree_en: edu.degree_en || edu.degreeEn || "",
+          degree_ar: edu.degree_ar || edu.degreeAr || "",
+          field_en: edu.field_en || edu.fieldEn || "",
+          field_ar: edu.field_ar || edu.fieldAr || "",
+          institution_en: edu.institution_en || edu.institutionEn || "",
+          institution_ar: edu.institution_ar || edu.institutionAr || "",
+          start_date: edu.start_date || edu.startDate || null,
+          end_date: edu.end_date || edu.endDate || null,
         }))
       : [],
   });
 }, [cardData]);
+
   // Check client expiration
 const isAdminUser = user?.role === "Admin";
 
@@ -332,51 +301,51 @@ const handleSave = async () => {
     handleChange("skills", skills);
   };
 
+const addExperience = () => {
+  const arr = Array.isArray(form.experience) ? form.experience : [];
 
+  if (arr.length > 0) return;
 
-  const addExperience = () => {
-  const arr = Array.isArray(form.experience) ? [...form.experience] : [];
-  arr.push({
-    title_en: "",
-    title_ar: "",
-    company_en: "",
-    company_ar: "",
-    description_en: "",
-    description_ar: "",
-    start_date: "",
-    end_date: "",
-    is_current: false,
-    display_order: arr.length + 1,
-  });
-  handleChange("experience", arr);
-};
-
-const removeExperience = (i: number) => {
-  const arr = Array.isArray(form.experience) ? [...form.experience] : [];
-  arr.splice(i, 1);
-  handleChange("experience", arr);
+  handleChange("experience", [
+    {
+      title_en: "",
+      title_ar: "",
+      company_en: "",
+      company_ar: "",
+      description_en: "",
+      description_ar: "",
+      start_date: null,
+      end_date: null,
+      is_current: false,
+    },
+  ]);
 };
 
 const addEducation = () => {
-  const arr = Array.isArray(form.education) ? [...form.education] : [];
-  arr.push({
-    degree_en: "",
-    degree_ar: "",
-    field_en: "",
-    field_ar: "",
-    institution_en: "",
-    institution_ar: "",
-    start_date: "",
-    end_date: "",
-    display_order: arr.length + 1,
-  });
-  handleChange("education", arr);
+  const arr = Array.isArray(form.education) ? form.education : [];
+
+  if (arr.length > 0) return;
+
+  handleChange("education", [
+    {
+      degree_en: "",
+      degree_ar: "",
+      field_en: "",
+      field_ar: "",
+      institution_en: "",
+      institution_ar: "",
+      start_date: null,
+      end_date: null,
+    },
+  ]);
 };
 
-const removeEducation = (i: number) => {
-  const arr = Array.isArray(form.education) ? [...form.education] : [];
-  arr.splice(i, 1);
-  handleChange("education", arr);
+const removeExperience = () => {
+  handleChange("experience", []);
+};
+
+const removeEducation = () => {
+  handleChange("education", []);
 };
 
 const handleImageSelect = async (
@@ -879,24 +848,40 @@ const finalImageUrl = uploadedUrl.replace("http://", "https://");
               </div>
             )}
 
-        {activeTab === "experience" && (
+    {activeTab === "experience" && (
   <div className="space-y-4">
     <div className="flex justify-end">
-      <button onClick={addExperience} className="icon-btn !p-3">
-        <Plus size={18} className="text-primary" />
+      <button
+        type="button"
+        onClick={addExperience}
+        disabled={Array.isArray(form.experience) && form.experience.length > 0}
+        className="flex items-center gap-2 rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground disabled:opacity-50"
+      >
+        <Plus size={16} />
+        {lang === "ar" ? "إضافة خبرة" : "Add Experience"}
       </button>
     </div>
 
-    {(Array.isArray(form.experience) ? form.experience : []).map((exp: any, i: number) => (
-      <div key={i} className="grid gap-3 rounded-xl border border-border p-4 md:grid-cols-2">
+    {Array.isArray(form.experience) && form.experience.length > 0 ? (
+      <div className="grid gap-3 rounded-xl border border-border p-4 md:grid-cols-2">
+        <div className="md:col-span-2 flex justify-end">
+          <button
+            type="button"
+            onClick={removeExperience}
+            className="text-sm text-destructive"
+          >
+            {lang === "ar" ? "حذف" : "Remove"}
+          </button>
+        </div>
+
         <div>
           <label className={labelClass}>{t("title")} ({t("english")})</label>
           <input
             className={inputClass}
-            value={exp.title_en || ""}
+            value={form.experience[0]?.title_en || ""}
             onChange={(e) => {
               const arr = [...(form.experience as any[])];
-              arr[i] = { ...arr[i], title_en: e.target.value };
+              arr[0] = { ...arr[0], title_en: e.target.value };
               handleChange("experience", arr);
             }}
           />
@@ -907,10 +892,10 @@ const finalImageUrl = uploadedUrl.replace("http://", "https://");
           <input
             className={inputClass}
             dir="rtl"
-            value={exp.title_ar || ""}
+            value={form.experience[0]?.title_ar || ""}
             onChange={(e) => {
               const arr = [...(form.experience as any[])];
-              arr[i] = { ...arr[i], title_ar: e.target.value };
+              arr[0] = { ...arr[0], title_ar: e.target.value };
               handleChange("experience", arr);
             }}
           />
@@ -920,10 +905,10 @@ const finalImageUrl = uploadedUrl.replace("http://", "https://");
           <label className={labelClass}>{t("company")} ({t("english")})</label>
           <input
             className={inputClass}
-            value={exp.company_en || ""}
+            value={form.experience[0]?.company_en || ""}
             onChange={(e) => {
               const arr = [...(form.experience as any[])];
-              arr[i] = { ...arr[i], company_en: e.target.value };
+              arr[0] = { ...arr[0], company_en: e.target.value };
               handleChange("experience", arr);
             }}
           />
@@ -934,43 +919,56 @@ const finalImageUrl = uploadedUrl.replace("http://", "https://");
           <input
             className={inputClass}
             dir="rtl"
-            value={exp.company_ar || ""}
+            value={form.experience[0]?.company_ar || ""}
             onChange={(e) => {
               const arr = [...(form.experience as any[])];
-              arr[i] = { ...arr[i], company_ar: e.target.value };
+              arr[0] = { ...arr[0], company_ar: e.target.value };
               handleChange("experience", arr);
             }}
           />
         </div>
-
-        <div className="md:col-span-2 flex justify-end">
-          <button onClick={() => removeExperience(i)} className="icon-btn !p-2.5">
-            <X size={16} className="text-destructive" />
-          </button>
-        </div>
       </div>
-    ))}
+    ) : (
+      <div className="rounded-xl border border-dashed border-border p-6 text-center text-sm text-muted-foreground">
+        {lang === "ar" ? "لا توجد خبرة مضافة" : "No experience added"}
+      </div>
+    )}
   </div>
 )}
-
-     {activeTab === "education" && (
+{activeTab === "education" && (
   <div className="space-y-4">
     <div className="flex justify-end">
-      <button onClick={addEducation} className="icon-btn !p-3">
-        <Plus size={18} className="text-primary" />
+      <button
+        type="button"
+        onClick={addEducation}
+        disabled={Array.isArray(form.education) && form.education.length > 0}
+        className="flex items-center gap-2 rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground disabled:opacity-50"
+      >
+        <Plus size={16} />
+        {lang === "ar" ? "إضافة تعليم" : "Add Education"}
       </button>
     </div>
 
-    {(Array.isArray(form.education) ? form.education : []).map((edu: any, i: number) => (
-      <div key={i} className="grid gap-3 rounded-xl border border-border p-4 md:grid-cols-2">
+    {Array.isArray(form.education) && form.education.length > 0 ? (
+      <div className="grid gap-3 rounded-xl border border-border p-4 md:grid-cols-2">
+        <div className="md:col-span-2 flex justify-end">
+          <button
+            type="button"
+            onClick={removeEducation}
+            className="text-sm text-destructive"
+          >
+            {lang === "ar" ? "حذف" : "Remove"}
+          </button>
+        </div>
+
         <div>
           <label className={labelClass}>Degree ({t("english")})</label>
           <input
             className={inputClass}
-            value={edu.degree_en || ""}
+            value={form.education[0]?.degree_en || ""}
             onChange={(e) => {
               const arr = [...(form.education as any[])];
-              arr[i] = { ...arr[i], degree_en: e.target.value };
+              arr[0] = { ...arr[0], degree_en: e.target.value };
               handleChange("education", arr);
             }}
           />
@@ -981,10 +979,10 @@ const finalImageUrl = uploadedUrl.replace("http://", "https://");
           <input
             className={inputClass}
             dir="rtl"
-            value={edu.degree_ar || ""}
+            value={form.education[0]?.degree_ar || ""}
             onChange={(e) => {
               const arr = [...(form.education as any[])];
-              arr[i] = { ...arr[i], degree_ar: e.target.value };
+              arr[0] = { ...arr[0], degree_ar: e.target.value };
               handleChange("education", arr);
             }}
           />
@@ -994,10 +992,10 @@ const finalImageUrl = uploadedUrl.replace("http://", "https://");
           <label className={labelClass}>Field ({t("english")})</label>
           <input
             className={inputClass}
-            value={edu.field_en || ""}
+            value={form.education[0]?.field_en || ""}
             onChange={(e) => {
               const arr = [...(form.education as any[])];
-              arr[i] = { ...arr[i], field_en: e.target.value };
+              arr[0] = { ...arr[0], field_en: e.target.value };
               handleChange("education", arr);
             }}
           />
@@ -1008,22 +1006,20 @@ const finalImageUrl = uploadedUrl.replace("http://", "https://");
           <input
             className={inputClass}
             dir="rtl"
-            value={edu.field_ar || ""}
+            value={form.education[0]?.field_ar || ""}
             onChange={(e) => {
               const arr = [...(form.education as any[])];
-              arr[i] = { ...arr[i], field_ar: e.target.value };
+              arr[0] = { ...arr[0], field_ar: e.target.value };
               handleChange("education", arr);
             }}
           />
         </div>
-
-        <div className="md:col-span-2 flex justify-end">
-          <button onClick={() => removeEducation(i)} className="icon-btn !p-2.5">
-            <X size={16} className="text-destructive" />
-          </button>
-        </div>
       </div>
-    ))}
+    ) : (
+      <div className="rounded-xl border border-dashed border-border p-6 text-center text-sm text-muted-foreground">
+        {lang === "ar" ? "لا توجد بيانات تعليم مضافة" : "No education added"}
+      </div>
+    )}
   </div>
 )}
           </motion.div>
