@@ -155,11 +155,10 @@ if (!overrideData && isLoading) {    return (
   transition={{ duration: 0.7, ease: [0.68, -0.15, 0.27, 1.15] }}
 >
           {/* ===== FRONT ===== */}
-          {(!isMobile || !flipped) && (
-
-          <motion.div
-  className="glass-card w-full overflow-hidden max-sm:h-full max-sm:overflow-y-auto max-sm:overflow-x-hidden"
-            style={{ backfaceVisibility: "hidden" }}
+      {(!isMobile || !flipped) && (
+  <motion.div
+    className="glass-card w-full overflow-hidden"
+    style={isMobile ? {} : { backfaceVisibility: "hidden" }}
             initial={{ opacity: 0, y: 40, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
@@ -391,12 +390,19 @@ if (!overrideData && isLoading) {    return (
 )}
 
           {/* ===== BACK ===== */}
-          {(!isMobile || flipped) && (
-
-           <div
-  className="glass-card absolute inset-0 w-full overflow-y-auto overflow-x-hidden scrollbar-none max-sm:h-full"
-            style={{ backfaceVisibility: "hidden", transform: "rotateY(180deg)" }}
-          >
+    {(!isMobile || flipped) && (
+  <div
+    className={
+      isMobile
+        ? "glass-card w-full overflow-hidden"
+        : "glass-card absolute inset-0 w-full overflow-y-auto overflow-x-hidden scrollbar-none"
+    }
+    style={
+      isMobile
+        ? {}
+        : { backfaceVisibility: "hidden", transform: "rotateY(180deg)" }
+    }
+  >
             <Corner className="left-3 top-3" />
             <Corner className="right-3 top-3 rotate-90" />
             <Corner className="bottom-3 left-3 -rotate-90" />
