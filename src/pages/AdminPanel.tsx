@@ -160,9 +160,9 @@ const checkingAdmin = false;  const { data: clients, isLoading: loadingClients }
           <button onClick={() => setLang(lang === "en" ? "ar" : "en")} className="icon-btn !p-2.5">
             <Languages size={18} className="text-muted-foreground" />
           </button>
-          <button onClick={() => navigate("/dashboard")} className="icon-btn !p-2.5">
+          {/* <button onClick={() => navigate("/dashboard")} className="icon-btn !p-2.5">
             <Eye size={18} className="text-muted-foreground" />
-          </button>
+          </button> */}
           <button onClick={async () => { await signOut(); navigate("/login"); }} className="icon-btn !p-2.5">
             <LogOut size={18} className="text-muted-foreground" />
           </button>

@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
 import { api } from "@/lib/api";
 import BusinessCard from "./BusinessCard";
+import CardInstallPopup from "@/components/CardInstallPopup";
 
 const WEBSITE = 1;
 const LINKEDIN = 2;
@@ -19,54 +20,42 @@ const mapPublicProfileToCardData = (profile: any) => {
   return {
     id: profile.profileId,
     user_id: profile.userId,
-
     name_en: profile.nameEn || "",
     name_ar: profile.nameAr || "",
-
     title_en: profile.titleEn || "",
     title_ar: profile.titleAr || "",
-
     company_en: profile.companyEn || "",
     company_ar: profile.companyAr || "",
-
     about_en: profile.aboutEn || "",
     about_ar: profile.aboutAr || "",
-
     phone: profile.contactPhone || "",
     email: profile.contactEmail || "",
-
     location_en: profile.locationEn || "",
     location_ar: profile.locationAr || "",
-
     avatar_url: profile.avatarUrl || "",
     cv_url: profile.cvUrl || "",
-
     public_profile_url: profile.publicProfileUrl || "",
     qr_code_value: profile.qrCodeValue || profile.publicProfileUrl || "",
-
     website_url: getSocialUrl(profile.socialLinks, WEBSITE),
     linkedin_url: getSocialUrl(profile.socialLinks, LINKEDIN),
     whatsapp_url: getSocialUrl(profile.socialLinks, WHATSAPP),
-
     skills: Array.isArray(profile.skills)
       ? profile.skills.map((x: any) => x.nameEn || x.nameAr || "")
       : [],
-
     experience: Array.isArray(profile.experiences)
       ? profile.experiences.map((x: any) => ({
           title_en: x.titleEn || "",
           title_ar: x.titleAr || "",
           company_en: x.companyEn || "",
           company_ar: x.companyAr || "",
-          description_en: x.descriptionEn || "",
-          description_ar: x.descriptionAr || "",
+          description_en: x.DescriptionEn || "",
+          description_ar: x.DescriptionAr || "",
           start_date: x.startDate || null,
           end_date: x.endDate || null,
           is_current: x.isCurrent || false,
           display_order: x.displayOrder || 0,
         }))
       : [],
-
     education: Array.isArray(profile.educations)
       ? profile.educations.map((x: any) => ({
           degree_en: x.degreeEn || "",
@@ -80,11 +69,9 @@ const mapPublicProfileToCardData = (profile: any) => {
           display_order: x.displayOrder || 0,
         }))
       : [],
-
     is_public: profile.isPublic ?? true,
   };
 };
-
 
 const ClientCard = () => {
   const { userId } = useParams<{ userId: string }>();
@@ -114,7 +101,12 @@ const ClientCard = () => {
     );
   }
 
-  return <BusinessCard overrideData={cardData} />;
+  return (
+    <>
+      {userId && <CardInstallPopup userId={userId} />}
+      <BusinessCard overrideData={cardData} />
+    </>
+  );
 };
 
 export default ClientCard;
