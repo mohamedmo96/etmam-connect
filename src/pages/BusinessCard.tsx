@@ -85,9 +85,41 @@ const company = lang === "ar" ? (d.company_ar || "") : (d.company_en || "");
   const linkedinUrl = d.linkedin_url || "https://linkedin.com";
   const publicProfileUrl = d.public_profile_url || "";
 const qrValue = d.qr_code_value || publicProfileUrl || window.location.href;
-  const skills = Array.isArray(d.skills) ? d.skills : ["Business Analysis", "Requirements Gathering", "Process Optimization", "Stakeholder Management", "Agile Methodology", "Data Analysis"];
-  const experience = Array.isArray(d.experience) ? d.experience : [{ title_en: "Business Analyst", title_ar: "محلل أعمال", company_en: "Etmam for Information Technology", company_ar: "إتمام لتقنية المعلومات" }];
-  const education = Array.isArray(d.education) ? d.education : [{ degree_en: "Bachelor's Degree", degree_ar: "بكالوريوس", field_en: "Business Information Systems", field_ar: "نظم معلومات إدارية" }];
+const skills = Array.isArray(d.skills)
+  ? d.skills
+      .map((x: any) =>
+        typeof x === "string"
+          ? x
+          : x.name_ar || x.nameAr || x.name_en || x.nameEn || ""
+      )
+      .filter(Boolean)
+  : [];
+
+const experience = (
+  Array.isArray(d.experience) ? d.experience :
+  Array.isArray(d.experiences) ? d.experiences :
+  []
+).map((x: any) => ({
+  title_en: x.title_en || x.titleEn || "",
+  title_ar: x.title_ar || x.titleAr || "",
+  company_en: x.company_en || x.companyEn || "",
+  company_ar: x.company_ar || x.companyAr || "",
+  description_en: x.description_en || x.descriptionEn || x.DescriptionEn || "",
+  description_ar: x.description_ar || x.descriptionAr || x.DescriptionAr || "",
+}));
+
+const education = (
+  Array.isArray(d.education) ? d.education :
+  Array.isArray(d.educations) ? d.educations :
+  []
+).map((x: any) => ({
+  degree_en: x.degree_en || x.degreeEn || "",
+  degree_ar: x.degree_ar || x.degreeAr || "",
+  field_en: x.field_en || x.fieldEn || "",
+  field_ar: x.field_ar || x.fieldAr || "",
+  institution_en: x.institution_en || x.institutionEn || "",
+  institution_ar: x.institution_ar || x.institutionAr || "",
+}));
 const defaultAvatarUrl = "https://bahaswager.runasp.net/e69cbbf7-9815-4a2d-a5e9-f0c74a61ec37.png";
 const avatarSrc = d.avatar_url || defaultAvatarUrl;
   const handleSaveContact = () => {
@@ -519,13 +551,23 @@ if (!overrideData && isLoading) {    return (
                   <h2 className="text-[17px] font-extrabold text-foreground">{t("experience")}</h2>
                 </div>
                 <div className="space-y-3">
-                  {experience.map((exp: any, i: number) => (
-                    <div key={i} className="relative rounded-2xl border border-border/25 bg-secondary/10 p-4 ps-5">
-                      <div className="absolute inset-y-3 start-0 w-[3px] rounded-full bg-gradient-to-b from-primary to-primary/20" />
-                      <p className="text-[15px] font-bold text-foreground">{lang === "ar" ? exp.title_ar : exp.title_en}</p>
-                      <p className="mt-1 text-[13px] font-medium text-foreground/60">{lang === "ar" ? exp.company_ar : exp.company_en}</p>
-                    </div>
-                  ))}
+            {experience.length > 0 ? (
+  experience.map((exp: any, i: number) => (
+    <div key={i} className="relative rounded-2xl border border-border/25 bg-secondary/10 p-4 ps-5">
+      <div className="absolute inset-y-3 start-0 w-[3px] rounded-full bg-gradient-to-b from-primary to-primary/20" />
+      <p className="text-[15px] font-bold text-foreground">
+        {lang === "ar" ? exp.title_ar : exp.title_en}
+      </p>
+      <p className="mt-1 text-[13px] font-medium text-foreground/60">
+        {lang === "ar" ? exp.company_ar : exp.company_en}
+      </p>
+    </div>
+  ))
+) : (
+  <p className="text-sm text-muted-foreground">
+    {lang === "ar" ? "لا توجد خبرات مضافة" : "No experience added"}
+  </p>
+)}
                 </div>
               </motion.div>
 
@@ -542,13 +584,23 @@ if (!overrideData && isLoading) {    return (
                   <h2 className="text-[17px] font-extrabold text-foreground">{t("education")}</h2>
                 </div>
                 <div className="space-y-3">
-                  {education.map((edu: any, i: number) => (
-                    <div key={i} className="relative rounded-2xl border border-border/25 bg-secondary/10 p-4 ps-5">
-                      <div className="absolute inset-y-3 start-0 w-[3px] rounded-full bg-gradient-to-b from-primary to-primary/20" />
-                      <p className="text-[15px] font-bold text-foreground">{lang === "ar" ? edu.degree_ar : edu.degree_en}</p>
-                      <p className="mt-1 text-[13px] font-medium text-foreground/60">{lang === "ar" ? edu.field_ar : edu.field_en}</p>
-                    </div>
-                  ))}
+           {education.length > 0 ? (
+  education.map((edu: any, i: number) => (
+    <div key={i} className="relative rounded-2xl border border-border/25 bg-secondary/10 p-4 ps-5">
+      <div className="absolute inset-y-3 start-0 w-[3px] rounded-full bg-gradient-to-b from-primary to-primary/20" />
+      <p className="text-[15px] font-bold text-foreground">
+        {lang === "ar" ? edu.degree_ar : edu.degree_en}
+      </p>
+      <p className="mt-1 text-[13px] font-medium text-foreground/60">
+        {lang === "ar" ? edu.field_ar : edu.field_en}
+      </p>
+    </div>
+  ))
+) : (
+  <p className="text-sm text-muted-foreground">
+    {lang === "ar" ? "لا يوجد تعليم مضاف" : "No education added"}
+  </p>
+)}
                 </div>
               </motion.div>
             </div>
