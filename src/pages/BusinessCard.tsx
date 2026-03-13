@@ -1,18 +1,55 @@
-import { useState, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import profilePhoto from "@/assets/profile-photo.png";
 import { Link } from "react-router-dom";
 import { motion, useMotionValue, useTransform, useSpring } from "framer-motion";
 import {
   RotateCw, Globe, Linkedin, MessageCircle, Mail, Phone, MapPin,
   UserPlus, Share2, Settings, Heart, Award, Briefcase, GraduationCap,
-  Languages, Loader2, Zap,
+  Languages, Loader2, Zap, Download,
 } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useCardData } from "@/hooks/useCardData";
 
+type BeforeInstallPromptEvent = Event & {
+  prompt: () => Promise<void>;
+  userChoice: Promise<{ outcome: "accepted" | "dismissed" }>;
+};
+
 const BusinessCard = ({ overrideData }: { overrideData?: any } = {}) => {
   const [flipped, setFlipped] = useState(false);
+const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
+const [showInstallHelp, setShowInstallHelp] = useState(false);
+
+const isIOS = useMemo(
+  () => /iphone|ipad|ipod/i.test(window.navigator.userAgent),
+  []
+);
+
+const isAndroid = useMemo(
+  () => /android/i.test(window.navigator.userAgent),
+  []
+);
+
+useEffect(() => {
+  const handleBeforeInstallPrompt = (e: Event) => {
+    e.preventDefault();
+    setDeferredPrompt(e as BeforeInstallPromptEvent);
+  };
+
+  const handleAppInstalled = () => {
+    setDeferredPrompt(null);
+    setShowInstallHelp(false);
+  };
+
+  window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
+  window.addEventListener("appinstalled", handleAppInstalled);
+
+  return () => {
+    window.removeEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
+    window.removeEventListener("appinstalled", handleAppInstalled);
+  };
+}, []);
   const { lang, setLang, t } = useLanguage();
 const { data: fetchedData, isLoading } = useCardData(!overrideData);
   const cardData = overrideData || fetchedData;
@@ -62,6 +99,16 @@ const avatarSrc = d.avatar_url || defaultAvatarUrl;
       await navigator.share({ title: name, text: `${name} - ${title}`, url: window.location.href });
     }
   };
+
+  const handleInstallCard = async () => {
+  if (deferredPrompt) {
+    await deferredPrompt.prompt();
+    await deferredPrompt.userChoice;
+    return;
+  }
+
+  setShowInstallHelp(true);
+};
 
 if (!overrideData && isLoading) {    return (
       <div className="relative z-10 flex min-h-screen items-center justify-center">
@@ -290,30 +337,41 @@ if (!overrideData && isLoading) {    return (
   </div>
 </motion.div>
               {/* Actions */}
-              <motion.div
-                className="flex w-full items-center gap-2"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.85, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-              >
-                <motion.button
-                  onClick={handleSaveContact}
-                  className="save-btn flex flex-1 items-center justify-center gap-2 rounded-xl py-3 text-[13px] font-bold text-primary-foreground"
-                  whileHover={{ y: -1 }}
-                  whileTap={{ scale: 0.98 }}
-                >
-                  <UserPlus size={15} />
-                  {t("save_contact")}
-                </motion.button>
-                <motion.button
-                  onClick={handleShare}
-                  className="flex h-[44px] w-[44px] items-center justify-center rounded-xl border border-border/40 bg-secondary/20 transition-all hover:border-primary/30 hover:bg-primary/10"
-                  whileHover={{ y: -1 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <Share2 size={15} className="text-foreground/70" />
-                </motion.button>
-              </motion.div>
+           <motion.div
+  className="flex w-full items-center gap-2"
+  initial={{ opacity: 0, y: 20 }}
+  animate={{ opacity: 1, y: 0 }}
+  transition={{ delay: 0.85, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+>
+  <motion.button
+    onClick={handleSaveContact}
+    className="save-btn flex flex-1 items-center justify-center gap-2 rounded-xl py-3 text-[13px] font-bold text-primary-foreground"
+    whileHover={{ y: -1 }}
+    whileTap={{ scale: 0.98 }}
+  >
+    <UserPlus size={15} />
+    {lang === "ar" ? "حفظ جهة الاتصال" : "Save Contact"}
+  </motion.button>
+
+  <motion.button
+    onClick={handleInstallCard}
+    className="flex h-[44px] w-[44px] items-center justify-center rounded-xl border border-border/40 bg-secondary/20 transition-all hover:border-primary/30 hover:bg-primary/10"
+    whileHover={{ y: -1 }}
+    whileTap={{ scale: 0.95 }}
+    title={lang === "ar" ? "إضافة للشاشة الرئيسية" : "Add to Home Screen"}
+  >
+    <Download size={15} className="text-foreground/70" />
+  </motion.button>
+
+  <motion.button
+    onClick={handleShare}
+    className="flex h-[44px] w-[44px] items-center justify-center rounded-xl border border-border/40 bg-secondary/20 transition-all hover:border-primary/30 hover:bg-primary/10"
+    whileHover={{ y: -1 }}
+    whileTap={{ scale: 0.95 }}
+  >
+    <Share2 size={15} className="text-foreground/70" />
+  </motion.button>
+</motion.div>
             </div>
 
             {/* Bottom accent */}
@@ -489,7 +547,55 @@ if (!overrideData && isLoading) {    return (
       >
         Powered by Etmam
       </motion.p>
+
+
+      {showInstallHelp && (
+  <div className="fixed inset-0 z-[9999] flex items-end justify-center bg-black/60 p-4 sm:items-center">
+    <div
+      dir={lang === "ar" ? "rtl" : "ltr"}
+      className="w-full max-w-md rounded-2xl border border-border bg-background p-5 text-start shadow-2xl"
+    >
+      <h3 className="mb-3 text-lg font-bold text-foreground">
+        {lang === "ar" ? "إضافة الكارت للشاشة الرئيسية" : "Add Card to Home Screen"}
+      </h3>
+
+      {isIOS ? (
+        <div className="space-y-2 text-sm leading-7 text-muted-foreground">
+          <p>{lang === "ar" ? "1. افتح الصفحة في متصفح Safari" : "1. Open this page in Safari"}</p>
+          <p>{lang === "ar" ? "2. اضغط زر المشاركة" : "2. Tap the Share button"}</p>
+          <p>{lang === "ar" ? "3. اختر إضافة إلى الشاشة الرئيسية" : "3. Choose Add to Home Screen"}</p>
+          <p>{lang === "ar" ? "4. اضغط إضافة" : "4. Tap Add"}</p>
+        </div>
+      ) : isAndroid ? (
+        <div className="space-y-2 text-sm leading-7 text-muted-foreground">
+          <p>{lang === "ar" ? "1. افتح الصفحة في متصفح Chrome" : "1. Open this page in Chrome"}</p>
+          <p>{lang === "ar" ? "2. اضغط القائمة" : "2. Tap the menu"}</p>
+          <p>{lang === "ar" ? "3. اختر إضافة إلى الشاشة الرئيسية أو تثبيت التطبيق" : "3. Choose Add to Home Screen or Install App"}</p>
+          <p>{lang === "ar" ? "4. اضغط إضافة أو تثبيت" : "4. Tap Add or Install"}</p>
+        </div>
+      ) : (
+        <div className="space-y-2 text-sm leading-7 text-muted-foreground">
+          <p>
+            {lang === "ar"
+              ? "استخدم قائمة المتصفح ثم اختر إضافة إلى الشاشة الرئيسية إذا كانت متاحة."
+              : "Use your browser menu and choose Add to Home Screen if available."}
+          </p>
+        </div>
+      )}
+
+      <div className="mt-5 flex justify-end gap-2">
+        <button
+          onClick={() => setShowInstallHelp(false)}
+          className="rounded-xl border border-border px-4 py-2 text-sm text-foreground"
+        >
+          {lang === "ar" ? "إغلاق" : "Close"}
+        </button>
+      </div>
     </div>
+  </div>
+)}
+    </div>
+
   );
 };
 

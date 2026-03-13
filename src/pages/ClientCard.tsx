@@ -3,7 +3,6 @@ import { useQuery } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
 import { api } from "@/lib/api";
 import BusinessCard from "./BusinessCard";
-import CardInstallPopup from "@/components/CardInstallPopup";
 
 const WEBSITE = 1;
 const LINKEDIN = 2;
@@ -103,7 +102,6 @@ const ClientCard = () => {
 
   return (
     <>
-      {userId && <CardInstallPopup userId={userId} />}
       <BusinessCard overrideData={cardData} />
     </>
   );
